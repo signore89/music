@@ -7,14 +7,14 @@ public class AlbumController(IAlbumRepository albumRepository) : Controller
 {
     public async Task<IActionResult> Index()
     {
-        var albums = await albumRepository.GetAllAsync();
+        var albums = albumRepository.GetAll();
 
         return View(albums);
     }
 
     public async Task<IActionResult> Details(int id)
     {
-        var album = await albumRepository.GetDetailsByIdAsync(id);
+        var album = albumRepository.GetDetailsById(id);
 
         return View(album);
     }
