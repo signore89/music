@@ -1,21 +1,26 @@
-﻿using Music.Data.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Music.Data.Repositories.Interfaces;
 using Music.Models;
 
 namespace Music.Data.Repositories
 {
-    public class ArtistRepository : IArtistRepository
+    public class ArtistRepository(MusicDbContext musicDbContext) : IArtistRepository
     {
-        public List<Artist> GetArtists()
+        public async Task<List<Artist>> GetAllAsync()
         {
-            return new List<Artist>
-            {
-                new Artist
-                {
-                     Id = 0,
-                     Name = "Артист1",
-                     UrlImg = "https://avatars.mds.yandex.net/get-entity_search/5735732/1132006118/SUx182"
-                }
-            };
+            var artists = await musicDbContext.Artists.AsNoTracking().ToListAsync();
+
+            return artists;
+        }
+
+        public async Task<Artist> GetDetailsByIdAsync(int id)
+        {
+            var artist = await musicDbContext.Artists
+                    .AsNoTracking()
+                    .Include(artist => artist.Songs)
+                    .FirstAsync(x => x.Id == id);
+
+            return artist;
         }
     }
 }

@@ -4,6 +4,6 @@ namespace Music.Data.Repositories.Interfaces;
 
 public interface IAlbumRepository
 {
-    public List<Album> GetAll();
-    public Album GetDetailsById(int id);
+    Task<List<Album>> GetAllAsync();
+    Task<Album> GetDetailsByIdAsync(int id);
 }
