@@ -1,23 +1,25 @@
-﻿using Music.Data.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Music.Data.Repositories.Interfaces;
 using Music.Models;
-using static System.Net.WebRequestMethods;
 
 namespace Music.Data.Repositories
 {
-    public class SongRepository : ISongRepository
+    public class SongRepository(MusicDbContext musicDbContext) : ISongRepository
     {
-        public List<Song> GetSongs()
+        public async Task<List<Song>> GetAllAsync()
         {
-            return new List<Song>
-            {
-                new Song
-                {
-                     Id = 0,
-                     Name = "Трек1",
-                     UrlSong = "https://rus.hitmotop.com/song/47851939"
-                }
+            var songs = await musicDbContext.Songs.AsNoTracking().ToListAsync();
 
-            };
+            return songs;
+        }
+
+        public async Task<Song> GetDetailsByIdAsync(int id)
+        {
+            var song = await musicDbContext.Songs
+          .AsNoTracking()
+          .FirstAsync(x => x.Id == id);
+
+            return song;
         }
     }
 }
