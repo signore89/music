@@ -22,7 +22,14 @@ namespace Music.Controllers
         {
             _musicDbContext.Artists.Add(artist);
             await _musicDbContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(GetArtistAsync));
+        }
+
+        public async Task<IActionResult> GetArtistAsync()
+        {
+            return View(await _musicDbContext.Artists.Include(a => a.Songs)
+                                             .Include(a => a.Albums)
+                                             .ToListAsync());
         }
     }
 }
