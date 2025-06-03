@@ -29,7 +29,7 @@ namespace Music.Controllers
         public async Task<IActionResult> Save(Artist artist)
         {
             var answer = await _artistRepository.EditSave(artist);
-            return Ok(answer);// сделать подтверждение
+            return RedirectToAction("Index", "Home");// сделать подтверждение
         }
 
         [HttpPost]
