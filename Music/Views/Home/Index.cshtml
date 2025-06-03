@@ -7,14 +7,54 @@
 
         @foreach (var artist in Model)
         {
-            <div class="col-md-4 col-lg-3">
-                <div class="card album-card">
-                    <img src="@artist.UrlImg" class="card-img-top" alt="...">
+            <div class="card artist-card mb-4" style="width: 18rem;">
+            <!-- Изображение артиста -->
+                <img src="@Url.Content(artist.UrlImg)" 
+                    class="card-img-top" 
+                    alt="@artist.Name"
+                    asp-append-version="true">
+    
                     <div class="card-body">
-                        <h5 class="card-title">@artist.Name</h5>
-                        <a href="#" class="btn btn-primary">Перейти</a>
-                    </div>
-                </div>
+                        <!-- Имя артиста -->
+                            <h5 class="card-title">@artist.Name</h5>
+                        @* <!-- Описание -->
+                            <p class="card-text">@artist</p> *@
+        
+                        <!-- Кнопки действий -->
+                            <div class="d-flex flex-wrap gap-2">
+                                @* <!-- Добавить в избранное -->
+                                    <button class="btn btn-outline-danger btn-sm favorite-btn @(Model.IsFavorite ? "active" : "")" 
+                                            data-artist-id="@Model.Id" 
+                                            onclick="toggleFavorite(this)">
+                                        <i class="bi @(Model.IsFavorite ? "bi-heart-fill" : "bi-heart")"></i> 
+                                        @(Model.IsFavorite ? "В избранном" : "В избранное")
+                                    </button> *@
+            
+                            @*         <!-- Альбомы -->
+                                    <a asp-controller="Album" asp-action="Index" asp-route-artistId="@Model.Id" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-collection"></i> Альбомы
+                                    </a>
+            
+                            <!-- Песни -->
+                            <a asp-controller="Song" asp-action="Index" asp-route-artistId="@Model.Id" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-music-note-list"></i> Песни
+                            </a> *@
+            
+                                <!-- Изменить -->
+                                <a asp-controller="Artist" asp-action="Edit" asp-route-id="@artist.Id" 
+                                   class="btn btn-outline-warning btn-sm">
+                                    <i class="bi bi-pencil"></i> Изменить
+                                </a>
+                
+                                <!-- Удалить -->
+                                <a asp-controller="Artist" asp-action="Delete" asp-route-id="@artist.Id"
+                                     class="btn btn-outline-danger">
+                                    <i class="bi bi-pencil"></i> Удалить
+                                </a>
+                            </div>
+                     </div>
             </div>
         }
     </div>
