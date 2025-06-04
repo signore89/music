@@ -30,17 +30,17 @@
                                         @(Model.IsFavorite ? "В избранном" : "В избранное")
                                     </button> *@
             
-                            @*         <!-- Альбомы -->
-                                    <a asp-controller="Album" asp-action="Index" asp-route-artistId="@Model.Id" 
+                                    <!-- Альбомы -->
+                                    <a asp-controller="Album" asp-action="Index" asp-route-artistId="@artist.Id" 
                                        class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-collection"></i> Альбомы
                                     </a>
             
-                            <!-- Песни -->
-                            <a asp-controller="Song" asp-action="Index" asp-route-artistId="@Model.Id" 
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-music-note-list"></i> Песни
-                            </a> *@
+                                    <!-- Песни -->
+                                     <a asp-controller="Song" asp-action="SoundLibrary" asp-route-artistId="@artist.Id"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-music-note-list"></i> Песни
+                                     </a>
             
                                 <!-- Изменить -->
                                 <a asp-controller="Artist" asp-action="Edit" asp-route-id="@artist.Id" 

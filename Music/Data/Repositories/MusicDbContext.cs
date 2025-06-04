@@ -8,6 +8,8 @@ namespace Music.Data.Repositories
         public DbSet<Album> Albums { get; set; }
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Song> Songs { get; set; }
+        public DbSet<AlbumSong> AlbumSongs { get; set; }
+        public DbSet<ArtistSongs> ArtistSongs { get; set; }
         public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
 
@@ -8,12 +7,13 @@ namespace Music.Controllers
     public class ArtistController : Controller
     {
         private readonly IArtistRepository _artistRepository;
-
-
         public ArtistController(IArtistRepository artist)
         {
             _artistRepository = artist;
         }
+
+
+
         public  IActionResult Index()
         {
             var artist =  _artistRepository.GetAllAsync();

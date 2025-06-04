@@ -56,5 +56,12 @@ namespace Music.Data.Repositories
 
             return artist;
         }
+
+        public async Task<List<Artist>> SearchByNameAsync(string name)
+        {
+            return await musicDbContext.Artists 
+            .Where(a => a.Name.Contains(name))
+            .ToListAsync();
+        }
     }
 }

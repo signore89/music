@@ -9,5 +9,6 @@ namespace Music.Data.Repositories.Interfaces
         Task<bool> EditSave(Artist artist);
         Task<bool> DeleteByIdAsync(int id);
         Task<bool> CreateAsync(Artist artist);
+        Task<List<Artist>> SearchByNameAsync(string name);
     }
 }

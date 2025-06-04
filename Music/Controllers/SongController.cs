@@ -11,4 +11,10 @@ public class SongController(ISongRepository songRepository) : Controller
 
         return View(songs);
     }
+
+    public async Task<IActionResult> SoundLibrary(int artistId)
+    {
+        var songs = await songRepository.GetSongsByIdArtistAsync(artistId);
+        return View(songs);
+    }
 }

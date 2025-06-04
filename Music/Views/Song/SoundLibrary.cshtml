@@ -1,0 +1,31 @@
+﻿@model List<Song>
+
+<!-- Основное содержимое -->
+<div class="container">
+    <div class="row">
+        <!-- Список треков -->
+        <div class="col-lg-8">
+            <h2 class="mb-4">Песни</h2>
+
+            <div class="track-list">
+                @foreach (var song in Model)
+                {
+                    <div class="track-item">
+                        <div class="track-number">1</div>
+                        <div class="track-info">
+                            <h6 class="mb-0">@song.Name</h6>
+                        </div>
+                        <audio controls class="audio-player">
+                            <source src="@song.UrlSong" type="audio/mpeg">
+                            Ваш браузер не поддерживает аудио элемент.
+                        </audio>
+                        <a asp-controller="Song" asp-action="Edit" asp-route-id="@song.Id"
+                           class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-pencil"></i> Изменить
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
