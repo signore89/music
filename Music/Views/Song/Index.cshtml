@@ -1,4 +1,7 @@
-﻿@model List<Song>
+﻿
+@using Music.ViewsModels
+@model IndexViewModel
+
 
 <!-- Основное содержимое -->
 <div class="container">
@@ -8,10 +11,9 @@
             <h2 class="mb-4">Песни</h2>
 
             <div class="track-list">
-                @foreach (var song in Model)
+                @foreach (var song in Model.Songs)
                 {
                     <div class="track-item">
-                        <div class="track-number">1</div>
                         <div class="track-info">
                             <h6 class="mb-0">@song.Name</h6>
                         </div>
@@ -19,9 +21,28 @@
                             <source src="@song.UrlSong" type="audio/mpeg">
                             Ваш браузер не поддерживает аудио элемент.
                         </audio>
+                        <a asp-controller="Song" asp-action="AddFavoriteSongs" asp-route-idSong="@song.Id" class="btn btn-warning btn-sm">
+                            <i class="fas fa-star"></i> Добавить в избранное
+                        </a>
                     </div>
                 }
             </div>
         </div>
     </div>
+</div>
+<div>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)" class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)" class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
 </div>

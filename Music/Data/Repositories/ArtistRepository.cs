@@ -33,6 +33,7 @@ namespace Music.Data.Repositories
             {
                 existingArtist.Name = artist.Name;
                 existingArtist.UrlImg = artist.UrlImg;
+                existingArtist.UserId = artist.UserId;
                 musicDbContext.Update(existingArtist);
                 await musicDbContext.SaveChangesAsync();
                 return true;

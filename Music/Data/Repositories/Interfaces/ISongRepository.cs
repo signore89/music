@@ -11,5 +11,6 @@ namespace Music.Data.Repositories.Interfaces
         Task<bool> DeleteByIdAsync(int id);
         Task<bool> CreateAsync(Song song);
         Task<List<Song>> GetSongsByIdArtistAsync(int id);
+        public Task<List<Song>> GetFavoriteSongs();
     }
 }

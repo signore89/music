@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Music.Data.Repositories;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
 
@@ -52,6 +53,22 @@ namespace Music.Controllers
         {
             var answer = await _artistRepository.DeleteByIdAsync(id);
             return RedirectToAction("Index", "Home");//indexof
+        }
+
+        public async Task<IActionResult> AddFavoriteArtist(int id)
+        {
+            var artist = await _artistRepository.GetByIdAsync(id);
+            artist.UserId = 1;
+            await _artistRepository.EditSave(artist);
+            return RedirectToAction("Index", "Home");// что возвращать?
+        }
+
+        public async Task<IActionResult> RemoveFavoriteArtist(int id)
+        {
+            var artist = await _artistRepository.GetByIdAsync(id);
+            artist.UserId = null;
+            await _artistRepository.EditSave(artist);
+            return RedirectToAction("Index", "Home");// что возвращать?
         }
     }
 }

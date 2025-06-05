@@ -11,7 +11,7 @@
 
     <form method="get" asp-action="Index" class="mb-4">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Введите название альбома или артиста..."
+            <input type="text" class="form-control" placeholder="выбирите справа что искать и введите искомое ..."
                    name="query" value="@Model.Query">
             <select class="form-select" name="searchType" style="max-width: 150px;">
                 <option value="albums" selected="@(Model.SearchType == "albums")">Альбомы</option>

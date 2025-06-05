@@ -35,6 +35,7 @@ namespace Music.Data.Repositories
                 existingSong.UrlSong = song.UrlSong;
                 existingSong.AlbumId = song.AlbumId;
                 existingSong.Artists = song.Artists;
+                existingSong.UserId = song.UserId;
                 musicDbContext.Update(existingSong);
                 await musicDbContext.SaveChangesAsync();
                 return true;
@@ -74,6 +75,12 @@ namespace Music.Data.Repositories
             return await musicDbContext.Songs
             .Where(a => a.Name.Contains(name))
             .ToListAsync();
+        }
+
+        public async Task<List<Song>> GetFavoriteSongs()
+        {
+            var song =  await musicDbContext.Songs.Where(s => s.UserId == 1).ToListAsync();
+            return song;
         }
     }
 }

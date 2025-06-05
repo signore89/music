@@ -29,3 +29,38 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.pagination-container {
+    text-align: center;
+}
+
+.pagination a {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+}
+
+    .pagination a.active {
+        background-color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .pagination a:hover:not(.active) {
+        background-color: #ddd;
+    }
+
+.glyphicon {
+    display: inline-block;
+    padding: 0 5px;
+}
+
+.glyphicon-chevron-right:after {
+    content: "\00BB";
+}
+
+.glyphicon-chevron-left:before {
+    content: "\00AB";
+}

@@ -1,7 +1,7 @@
 ﻿@model List<Artist>
 
 <div class="container py-5">
-    <h1 class="text-center mb-5">Популярные Артисты</h1>
+    <h1 class="text-center mb-5">Артисты</h1>
 
     <div class="row">
 
@@ -17,22 +17,25 @@
                     <div class="card-body">
                         <!-- Имя артиста -->
                             <h5 class="card-title">@artist.Name</h5>
-                        @* <!-- Описание -->
-                            <p class="card-text">@artist</p> *@
         
                         <!-- Кнопки действий -->
                             <div class="d-flex flex-wrap gap-2">
-                                @* <!-- Добавить в избранное -->
-                                    <button class="btn btn-outline-danger btn-sm favorite-btn @(Model.IsFavorite ? "active" : "")" 
-                                            data-artist-id="@Model.Id" 
+                                <!-- Добавить в избранное -->
+                                    <button class="btn btn-outline-danger btn-sm favorite-btn @(artist.UserId == 1 ? "active" : "")" 
+                                            data-artist-id="@artist.Id" 
                                             onclick="toggleFavorite(this)">
-                                        <i class="bi @(Model.IsFavorite ? "bi-heart-fill" : "bi-heart")"></i> 
-                                        @(Model.IsFavorite ? "В избранном" : "В избранное")
-                                    </button> *@
+                                            <i class="bi @(artist.UserId == 1 ? "bi-heart-fill" : "bi-heart")"></i>
+                                            @(artist.UserId == 1 ? "В избранном" : "В избранное")
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm"
+                                            data-artist-id="@artist.Id"
+                                            onclick="confirmDeleteArtist(this)">
+                                        <i class="bi bi-trash"></i> Удалить из избранного
+                                    </button>
             
                                     <!-- Альбомы -->
-                                    <a asp-controller="Album" asp-action="Index" asp-route-artistId="@artist.Id" 
-                                       class="btn btn-outline-primary btn-sm">
+                                    <a asp-controller="Album" asp-action="GetArtistAlbums" asp-route-artistId="@artist.Id"
+                                        class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-collection"></i> Альбомы
                                     </a>
             
@@ -59,3 +62,32 @@
         }
     </div>
 </div>
+
+                                <!-- Скрипты для обработки действий -->
+@section Scripts {
+    <script>
+        // Добавление/удаление из избранного
+        function toggleFavorite(button) {
+            const artistId = button.getAttribute('data-artist-id');
+            window.location.href = '@Url.Action("AddFavoriteArtist", "Artist", new { id = "id" })'.replace("id",artistId);
+            
+            
+            // Визуальное переключение состояния
+            button.classList.toggle('active');
+            if (button.classList.contains('active')) {
+                button.innerHTML = '<i class="bi bi-heart-fill"></i> В избранном';
+            } else {
+                button.innerHTML = '<i class="bi bi-heart"></i> В избранное';
+            }
+        }
+        
+        // Подтверждение удаления артиста
+        function confirmDeleteArtist(button) {
+                const artistId = button.getAttribute('data-artist-id');
+                window.location.href = '@Url.Action("RemoveFavoriteArtist", "Artist", new { id = "id" })'.replace("id",artistId);
+                // Удаляем карточку из DOM
+                // button.closest('.artist-card').remove();
+            
+        }
+    </script>
+    }

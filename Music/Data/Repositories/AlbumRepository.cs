@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Music.Data.Repositories
 {
@@ -22,6 +21,14 @@ namespace Music.Data.Repositories
                     .FirstAsync(x => x.Id == id);
 
             return album;
+        }
+
+        public async Task<List<Album>> SearchArtistAlbums(int id)
+        {
+            return await musicDbContext.Albums
+                .AsNoTracking()
+                .Where(a => a.ArtistId == id)
+                .ToListAsync();
         }
 
         public async Task<List<Album>> SearchByNameAsync(string name)
