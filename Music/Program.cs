@@ -5,6 +5,8 @@ using Music.Data.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 var connection = builder.Configuration.GetConnectionString("MusicDbConnection");
+builder.Services.AddDbContext<MusicDbContext>(options =>
+    options.UseNpgsql(connection));
 
 builder.Services.AddSingleton<IAlbumRepository, AlbumRepository>();
 builder.Services.AddSingleton<IArtistRepository, ArtistRepository>();
@@ -13,10 +15,6 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-//проверка
+
 
 app.Run();

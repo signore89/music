@@ -3,8 +3,12 @@
 public class Album
 {
     public int Id { get; set; }
-    public required string Name { get; set; }
-    public required int YearOfIssue { get; set; }
-    public required string UrlImg { get; set; }
-    public required List<Song> Songs { get; set; }
+    public required string Name { get; set; } = "unknown album";
+    public  int? YearOfIssue { get; set; }
+    public  string? UrlImg { get; set; }
+    public int ArtistId { get; set; }
+    public required Artist Artist { get; set; }
+    public  List<Song>? Songs { get; set; }
+    public List<User>? Users { get; set; }
+
 }
