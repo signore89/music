@@ -36,7 +36,7 @@ public class SongController(ISongRepository songRepository) : Controller
         var song = await songRepository.GetDetailsByIdAsync(idSong);
         song.UserId = 1;
         await songRepository.EditSave(song);
-        return RedirectToAction("FavoriteSongs");
+        return RedirectToAction(nameof(FavoriteSongs));
     }
 
     public async Task<IActionResult> RemoveFavoriteSongs(int idSong)
@@ -44,6 +44,6 @@ public class SongController(ISongRepository songRepository) : Controller
         var song = await songRepository.GetDetailsByIdAsync(idSong);
         song.UserId = null;
         await songRepository.EditSave(song);
-        return RedirectToAction("FavoriteSongs");
+        return RedirectToAction(nameof(FavoriteSongs));
     }
 }

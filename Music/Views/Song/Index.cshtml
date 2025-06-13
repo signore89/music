@@ -13,18 +13,33 @@
             <div class="track-list">
                 @foreach (var song in Model.Songs)
                 {
-                    <div class="track-item">
-                        <div class="track-info">
-                            <h6 class="mb-0">@song.Name</h6>
+                    if(song.UserId != null)
+                    {
+                        <div class="track-item">
+                            <div class="track-info">
+                                <h6 class="mb-0">@song.Name</h6>
+                            </div>
+                            <audio controls class="audio-player">
+                                <source src="@song.UrlSong" type="audio/mpeg">
+                                Ваш браузер не поддерживает аудио элемент.
+                            </audio>
                         </div>
-                        <audio controls class="audio-player">
-                            <source src="@song.UrlSong" type="audio/mpeg">
-                            Ваш браузер не поддерживает аудио элемент.
-                        </audio>
-                        <a asp-controller="Song" asp-action="AddFavoriteSongs" asp-route-idSong="@song.Id" class="btn btn-warning btn-sm">
-                            <i class="fas fa-star"></i> Добавить в избранное
-                        </a>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="track-item">
+                            <div class="track-info">
+                                <h6 class="mb-0">@song.Name</h6>
+                            </div>
+                            <audio controls class="audio-player">
+                                <source src="@song.UrlSong" type="audio/mpeg">
+                                Ваш браузер не поддерживает аудио элемент.
+                            </audio>
+                            <a asp-controller="Song" asp-action="AddFavoriteSongs" asp-route-idSong="@song.Id" class="btn btn-warning btn-sm">
+                                <i class="fas fa-star"></i> Добавить в избранное
+                            </a>
+                        </div>
+                    }  
                 }
             </div>
         </div>
