@@ -4,20 +4,41 @@ using static System.Net.WebRequestMethods;
 
 namespace Music.Data.Repositories
 {
-    public class SongRepository : ISongRepository
+    public class SongRepository(MusicDbContext musicDbContext) : ISongRepository
     {
-        public List<Song> GetSongs()
+        public int AddNewSong(Song song)
         {
-            return new List<Song>
-            {
-                new Song
-                {
-                     Id = 0,
-                     Name = "Трек1",
-                     UrlSong = "https://rus.hitmotop.com/song/47851939"
-                }
+            throw new NotImplementedException();
+        }
 
-            };
+        public int DeleteSong(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Song> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Song GetSongById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Song> GetSongsByArtist(int idArtist, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Song> GetSongsByName(string searchString, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int UpdateSong(Song song)
+        {
+            throw new NotImplementedException();
         }
     }
 }

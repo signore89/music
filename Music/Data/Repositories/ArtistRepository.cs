@@ -3,19 +3,36 @@ using Music.Models;
 
 namespace Music.Data.Repositories
 {
-    public class ArtistRepository : IArtistRepository
+    public class ArtistRepository(MusicDbContext musicDbContext) : IArtistRepository
     {
-        public List<Artist> GetArtists()
+        public int AddNewArtist(Artist artist)
         {
-            return new List<Artist>
-            {
-                new Artist
-                {
-                     Id = 0,
-                     Name = "Артист1",
-                     UrlImg = "https://avatars.mds.yandex.net/get-entity_search/5735732/1132006118/SUx182"
-                }
-            };
+            throw new NotImplementedException();
+        }
+
+        public int DeleteArtist(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Artist> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Artist GetArtistById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Artist> GetArtistsByName(string searchString, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int UpdateArtist(Artist artist)
+        {
+            throw new NotImplementedException();
         }
     }
 }

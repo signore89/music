@@ -6,7 +6,7 @@ public class Song
     public string Name { get; set; } = "unknown song";
     public required string UrlSong { get; set; }
     public int? AlbumId { get; set; }
-    public Album? Album { get; set; }
+    public Artist? Album { get; set; }
     public List<Artist>? Artists {  get; set; }
     public List<User>? Users { get; set; }
 }
