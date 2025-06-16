@@ -9,7 +9,7 @@ public class SongController(ISongRepository songRepository) : Controller
 {
     public async Task<IActionResult> Index()
     {
-        var album = songRepository.GetSongs();
+        var album = songRepository.GetAllAsync();
 
         return View(album);
     }

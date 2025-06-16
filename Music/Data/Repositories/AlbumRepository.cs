@@ -1,52 +1,81 @@
-﻿using Music.Data.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Music.Data.Repositories.Interfaces;
 using Music.Models;
 
 namespace Music.Data.Repositories;
 
 public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
 {
-    public List<Artist> GetAll()
+    public async Task<IEnumerable<Album>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var albums = await musicDbContext.Albums.AsNoTracking().ToListAsync();
+        return albums;
     }
 
-    public Artist GetAlbumById(int id)
+    public async Task<Album> GetAlbumByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await musicDbContext.Albums.FirstAsync(a => a.Id == id);
     }
 
-    List<Album> IAlbumRepository.GetAll()
+    public async Task<List<Album>> GetAlbumsByArtistAsync(int idArtist, int limit)
     {
-        throw new NotImplementedException();
+        var albums = await musicDbContext.Albums
+            .Where(a => a.ArtistId == idArtist)
+            .Skip(limit)
+            .AsNoTracking()
+            .ToListAsync();
+        return albums;
     }
 
-    Album IAlbumRepository.GetAlbumById(int id)
+    public async Task<List<Album>> GetAlbumsByNameAsync(string searchString, int limit)
     {
-        throw new NotImplementedException();
+        var albums = await musicDbContext.Albums
+            .Where(a => a.Name.Contains(searchString))
+            .Skip(limit)
+            .AsNoTracking()
+            .ToListAsync();
+        return albums;
     }
 
-    public List<Album> GetAlbumsByArtist(int idArtist, int limit)
+    public async Task<int> AddNewAlbumAsync(Album album)
     {
-        throw new NotImplementedException();
+        var myObject = await musicDbContext.Albums.AddAsync(album);
+        await musicDbContext.SaveChangesAsync();
+        return myObject.Entity.Id;
     }
 
-    public List<Album> GetAlbumsByName(string searchString, int limit)
+    public async Task<int> UpdateAlbumAsync(Album album)
     {
-        throw new NotImplementedException();
+        var existingAlbum = await musicDbContext.Albums
+            .Include(a => a.Songs)
+            .SingleOrDefaultAsync(a => a.Id == album.Id);
+        if (existingAlbum != null)
+        {
+            existingAlbum.Name = album.Name;
+            existingAlbum.YearOfIssue = album.YearOfIssue;
+            existingAlbum.UrlImg = album.UrlImg;
+            existingAlbum.ArtistId = album.ArtistId;
+            existingAlbum.Artist = album.Artist;
+            if (album.Songs != null)
+            {
+                existingAlbum.Songs = album.Songs;
+            }
+            await musicDbContext.SaveChangesAsync();
+            return existingAlbum.Id;
+        } 
+        else
+        {
+            return 0;//                                                    ДЕЛЬНЫЙ ВОЗВРАТ НУЖЕН
+        }
     }
 
-    public int AddNewAlbum(Album album)
+    public async void DeleteAlbumAsync(int id)
     {
-        throw new NotImplementedException();
-    }
-
-    public int UpdateAlbum(Album album)
-    {
-        throw new NotImplementedException();
-    }
-
-    public int DeleteAlbum(int id)
-    {
-        throw new NotImplementedException();
+        var findAlbum = await musicDbContext.Albums.FindAsync(id);
+        if (findAlbum != null)
+        {
+            musicDbContext.Albums.Remove(findAlbum);
+            await musicDbContext.SaveChangesAsync();
+        }
     }
 }

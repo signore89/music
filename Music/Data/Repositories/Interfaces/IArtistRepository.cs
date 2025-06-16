@@ -4,11 +4,11 @@ namespace Music.Data.Repositories.Interfaces
 {
     public interface IArtistRepository
     {
-        public List<Artist> GetAll();// мне кажется он не нужен
-        public Artist GetArtistById(int id);
-        public List<Artist> GetArtistsByName(string searchString, int limit);
-        public int AddNewArtist(Artist artist);
-        public int UpdateArtist(Artist artist);
-        public int DeleteArtist(int id);
+        public Task<IEnumerable<Artist>> GetAllAsync();// мне кажется он не нужен
+        public Task<Artist> GetArtistByIdAsync(int id);
+        public Task<List<Artist>> GetArtistsByNameAsync(string searchString, int limit);
+        public Task<int> AddNewArtistAsync(Artist artist);
+        public Task<int> UpdateArtistAsync(Artist artist);
+        public void DeleteArtist(int id);
     }
 }

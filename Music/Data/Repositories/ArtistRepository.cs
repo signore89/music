@@ -1,38 +1,71 @@
-﻿using Music.Data.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Music.Data.Repositories.Interfaces;
 using Music.Models;
 
 namespace Music.Data.Repositories
 {
     public class ArtistRepository(MusicDbContext musicDbContext) : IArtistRepository
     {
-        public int AddNewArtist(Artist artist)
+        public async Task<int> AddNewArtistAsync(Artist artist)
         {
-            throw new NotImplementedException();
+            var myObject = await musicDbContext.Artists.AddAsync(artist);
+            await musicDbContext.SaveChangesAsync();
+            return myObject.Entity.Id;
         }
 
-        public int DeleteArtist(int id)
+        public async void DeleteArtist(int id)
         {
-            throw new NotImplementedException();
+            var findArtist = await musicDbContext.Artists.FindAsync(id);
+            if (findArtist != null)
+            {
+                musicDbContext.Artists.Remove(findArtist);
+                await musicDbContext.SaveChangesAsync();
+            }
         }
 
-        public List<Artist> GetAll()
+        public async Task <IEnumerable<Artist>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var artists = await musicDbContext.Artists.AsNoTracking().ToListAsync();
+            return artists;
         }
 
-        public Artist GetArtistById(int id)
+        public async Task<Artist> GetArtistByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await musicDbContext.Artists.FirstAsync(a => a.Id == id);
         }
 
-        public List<Artist> GetArtistsByName(string searchString, int limit)
+        public async Task<List<Artist>> GetArtistsByNameAsync(string searchString, int limit)
         {
-            throw new NotImplementedException();
+            var artists = await musicDbContext.Artists
+           .Where(a => a.Name.Contains(searchString))
+           .Skip(limit)
+           .AsNoTracking()
+           .ToListAsync();
+            return artists;
         }
 
-        public int UpdateArtist(Artist artist)
+        public async Task<int> UpdateArtistAsync(Artist artist)
         {
-            throw new NotImplementedException();
+            var existingArtist = await musicDbContext.Artists
+                .Include(a => a.Songs)
+                .Include(a => a.Albums)
+                .SingleOrDefaultAsync(a => a.Id == artist.Id);
+            if (existingArtist != null)
+            {
+                existingArtist.Name = artist.Name;
+                existingArtist.UrlImg = artist.UrlImg;
+                if (artist.Songs != null ||  artist.Albums != null)
+                {
+                    existingArtist.Albums = artist.Albums;
+                    existingArtist.Songs = artist.Songs;
+                }
+                await musicDbContext.SaveChangesAsync();
+                return existingArtist.Id;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
