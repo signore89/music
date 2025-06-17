@@ -13,15 +13,22 @@ namespace Music.Data.Repositories
             return myObject.Entity.Id;
         }
 
-        public async void DeleteArtist(int id)
+        public async Task<bool> DeleteArtist(int id)
         {
             var findArtist = await musicDbContext.Artists.FindAsync(id);
             if (findArtist != null)
             {
                 musicDbContext.Artists.Remove(findArtist);
                 await musicDbContext.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
+
+        //public Task<IEnumerable<Artist>> GetAllArtistByAlbumAsync(int idAlbum)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public async Task <IEnumerable<Artist>> GetAllAsync()
         {
@@ -29,7 +36,7 @@ namespace Music.Data.Repositories
             return artists;
         }
 
-        public async Task<Artist> GetArtistByIdAsync(int id)
+        public async Task<Artist> GetArtistByIdAsync(int? id)
         {
             return await musicDbContext.Artists.FirstAsync(a => a.Id == id);
         }

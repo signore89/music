@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Music.Models.Album>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Все альбомы</h1>
+
+<p>
+    <a asp-action="Create" asp-route-id="@ViewBag.ArtistId"
+       class="btn btn-primary">
+       <i class="bi bi-pencil"></i> Добавить альбом
+    </a>
+</p>
+<div class="container py-5">
+    <h1 class="text-center mb-5">Альбомы</h1>
+
+    <div class="row">
+            @foreach (var album in Model) 
+            {
+                    <div class="card artist-card mb-4" style="width: 18rem;">
+
+                            <!-- Изображение альбома -->
+                            <img src="@Url.Content(album.UrlImg)"
+                                 class="card-img-top"
+                                 alt="@album.Name"
+                                 asp-append-version="true">
+
+                            <div class="card-body">
+                                <!-- Имя альбома -->
+                                <h5 class="card-title">@album.Name</h5>
+                                <!-- Кнопки действий -->
+                                <div class="d-flex flex-wrap gap-2">
+                                    <!-- Изменение альбома -->
+                                    <a asp-controller="Albums" asp-action="Edit" asp-route-id="@album.Id"
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-collection"></i> Изменить
+                                    </a>
+                                @* <!-- Песни -->
+                                   <a asp-controller="Song" asp-action="SoundLibrary" asp-route-artistId="@artist.Id"
+                                        class="btn btn-outline-primary btn-sm">
+                                          <i class="bi bi-music-note-list"></i> Песни
+                                   </a> *@
+                                    <!-- Изменить -->
+                                    <a asp-action="Edit" asp-route-id="@album.Id"
+                                       class="btn btn-outline-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> Изменить
+                                    </a>
+
+                                    <!-- Удалить -->
+                                    <a asp-action="Delete" asp-route-id="@album.Id"
+                                       class="btn btn-outline-danger">
+                                        <i class="bi bi-pencil"></i> Удалить
+                                    </a>
+                                    <!-- Детали -->
+                                    <a asp-action="Details" asp-route-id="@album.Id"
+                                       class="btn btn-outline-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> Рассмотреть
+                                    </a>
+                                </div>
+                            </div>
+                    </div>
+
+            }
+    </div>
+</div>

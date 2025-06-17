@@ -12,7 +12,7 @@ public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
         return albums;
     }
 
-    public async Task<Album> GetAlbumByIdAsync(int id)
+    public async Task<Album> GetAlbumByIdAsync(int? id)
     {
         return await musicDbContext.Albums.FirstAsync(a => a.Id == id);
     }
@@ -69,7 +69,7 @@ public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
         }
     }
 
-    public async void DeleteAlbumAsync(int id)
+    public async Task DeleteAlbumAsync(int id)
     {
         var findAlbum = await musicDbContext.Albums.FindAsync(id);
         if (findAlbum != null)
@@ -77,5 +77,14 @@ public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
             musicDbContext.Albums.Remove(findAlbum);
             await musicDbContext.SaveChangesAsync();
         }
+    }
+
+    public async Task<List<Album>> GetAlbumsByArtist(int? id)
+    {
+        var albums = await musicDbContext.Albums
+            .Where(a => a.ArtistId == id)
+            .AsNoTracking()
+            .ToListAsync();
+        return albums;
     }
 }

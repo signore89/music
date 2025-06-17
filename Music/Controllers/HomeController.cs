@@ -8,7 +8,7 @@ public class HomeController(IArtistRepository artistRepository) : Controller
 {
     public async Task<IActionResult> Index()
     {
-        var artists =  artistRepository.GetAllAsync;
+        var artists = await artistRepository.GetAllAsync();
 
         return View(artists);
     }

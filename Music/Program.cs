@@ -8,13 +8,15 @@ var connection = builder.Configuration.GetConnectionString("MusicDbConnection");
 builder.Services.AddDbContext<MusicDbContext>(options =>
     options.UseNpgsql(connection));
 
-builder.Services.AddSingleton<IAlbumRepository, AlbumRepository>();
-builder.Services.AddSingleton<IArtistRepository, ArtistRepository>();
-builder.Services.AddSingleton<ISongRepository, SongRepository>();
+builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
+builder.Services.AddScoped<ISongRepository, SongRepository>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-
+//app.UseHttpsRedirection();
+//app.UseStaticFiles();
+app.MapDefaultControllerRoute();
 
 app.Run();
