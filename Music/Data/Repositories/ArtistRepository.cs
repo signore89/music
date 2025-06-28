@@ -38,7 +38,10 @@ namespace Music.Data.Repositories
 
         public async Task<Artist> GetArtistByIdAsync(int? id)
         {
-            return await musicDbContext.Artists.FirstAsync(a => a.Id == id);
+            return await musicDbContext.Artists
+                .Include(a => a.Albums)
+                .Include(a => a.Songs)
+                .FirstAsync(a => a.Id == id);
         }
 
         public async Task<List<Artist>> GetArtistsByNameAsync(string searchString, int limit)
@@ -51,7 +54,7 @@ namespace Music.Data.Repositories
             return artists;
         }
 
-        public async Task<int> UpdateArtistAsync(Artist artist)
+        public async Task<Artist> UpdateArtistAsync(Artist artist, int[] selectedSongs, int[] selectedAlbums)
         {
             var existingArtist = await musicDbContext.Artists
                 .Include(a => a.Songs)
@@ -61,17 +64,29 @@ namespace Music.Data.Repositories
             {
                 existingArtist.Name = artist.Name;
                 existingArtist.UrlImg = artist.UrlImg;
-                if (artist.Songs != null ||  artist.Albums != null)
+                
+                if (selectedAlbums.Any())
                 {
-                    existingArtist.Albums = artist.Albums;
-                    existingArtist.Songs = artist.Songs;
+                    existingArtist.Albums.Clear();
+                    foreach (var album in musicDbContext.Albums.Where(a => selectedAlbums.Contains(a.Id)))
+                    {
+                        existingArtist.Albums.Add(album);
+                    }
+                }
+                if (selectedSongs.Any())
+                {
+                    existingArtist.Songs.Clear();
+                    foreach (var song in musicDbContext.Songs.Where(s => selectedSongs.Contains(s.Id)))
+                    {
+                        existingArtist.Songs.Add(song);
+                    }
                 }
                 await musicDbContext.SaveChangesAsync();
-                return existingArtist.Id;
+                return existingArtist;
             }
             else
             {
-                return 0;
+                return null;
             }
         }
     }

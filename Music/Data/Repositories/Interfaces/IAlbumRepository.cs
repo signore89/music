@@ -8,8 +8,8 @@ public interface IAlbumRepository
     public Task<Album> GetAlbumByIdAsync(int? id);
     public Task<List<Album>> GetAlbumsByArtistAsync(int idArtist, int limit);// возможно по имени артиста нужно искать
     public Task<List<Album>> GetAlbumsByNameAsync(string searchString, int limit);
-    public Task<int> AddNewAlbumAsync(Album album);
-    public Task<int> UpdateAlbumAsync(Album album);
-    public Task DeleteAlbumAsync(int id);
+    public Task<Album> AddNewAlbumAsync(Album album);
+    public Task<Album> UpdateAlbumAsync(Album album);
+    public Task<int> DeleteAlbumAsync(int id);
     public Task<List<Album>> GetAlbumsByArtist(int? id);
 }

@@ -14,7 +14,9 @@ public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
 
     public async Task<Album> GetAlbumByIdAsync(int? id)
     {
-        return await musicDbContext.Albums.FirstAsync(a => a.Id == id);
+        return await musicDbContext.Albums
+            .Include(a => a.Artist)
+            .FirstAsync(a => a.Id == id);
     }
 
     public async Task<List<Album>> GetAlbumsByArtistAsync(int idArtist, int limit)
@@ -37,14 +39,14 @@ public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
         return albums;
     }
 
-    public async Task<int> AddNewAlbumAsync(Album album)
+    public async Task<Album> AddNewAlbumAsync(Album album)
     {
         var myObject = await musicDbContext.Albums.AddAsync(album);
         await musicDbContext.SaveChangesAsync();
-        return myObject.Entity.Id;
+        return myObject.Entity;
     }
 
-    public async Task<int> UpdateAlbumAsync(Album album)
+    public async Task<Album> UpdateAlbumAsync(Album album)
     {
         var existingAlbum = await musicDbContext.Albums
             .Include(a => a.Songs)
@@ -61,22 +63,24 @@ public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
                 existingAlbum.Songs = album.Songs;
             }
             await musicDbContext.SaveChangesAsync();
-            return existingAlbum.Id;
+            return existingAlbum;
         } 
         else
         {
-            return 0;//                                                    ДЕЛЬНЫЙ ВОЗВРАТ НУЖЕН
+            return null;//                                                    ДЕЛЬНЫЙ ВОЗВРАТ НУЖЕН
         }
     }
 
-    public async Task DeleteAlbumAsync(int id)
+    public async Task<int> DeleteAlbumAsync(int id)
     {
         var findAlbum = await musicDbContext.Albums.FindAsync(id);
         if (findAlbum != null)
         {
             musicDbContext.Albums.Remove(findAlbum);
             await musicDbContext.SaveChangesAsync();
+            return findAlbum.ArtistId;
         }
+        return 0;
     }
 
     public async Task<List<Album>> GetAlbumsByArtist(int? id)

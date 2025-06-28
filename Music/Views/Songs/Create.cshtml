@@ -1,0 +1,58 @@
+﻿@model Music.Models.Song
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Добавление трека</h1>
+
+<h4>Трэк</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-action="Create">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Название</label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="UrlSong" class="control-label">URL адрес трэка</label>
+                <input asp-for="UrlSong" class="form-control" />
+            </div>
+            @if (Model.AlbumId == null)
+            {
+                <div class="form-group">
+                <label asp-for="AlbumId" class="control-label">ID альбома</label>
+                    <select asp-for="AlbumId" class="form-control" asp-items="ViewBag.Albums">
+                        <option selected="selected" disabled="disabled">Выберите альбом</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Имя артиста</label>
+                    <select asp-for="Name" class="form-control" asp-items="ViewBag.Artists">
+                        <option selected="selected" disabled="disabled">Выберите артиста</option>
+                    </select>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label asp-for="AlbumId" class="control-label">ID альбома</label>
+                    <input asp-for="AlbumId" class="form-control" value=@Model.AlbumId/>
+                </div>
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Добавить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Вернуться</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

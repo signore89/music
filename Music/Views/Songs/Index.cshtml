@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Music.Models.Song>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Все треки</h1>
+
+<p>
+    <a asp-action="Create">добавить песенку</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UrlSong)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Album.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var song in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => song.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => song.UrlSong)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => song.Album.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@song.Id">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@song.Id">Рассмотреть</a> |
+                <a asp-action="Delete" asp-route-id="@song.Id">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

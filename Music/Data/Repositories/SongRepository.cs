@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Build.Logging;
+using Microsoft.EntityFrameworkCore;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
 using static System.Net.WebRequestMethods;
@@ -7,21 +8,31 @@ namespace Music.Data.Repositories
 {
     public class SongRepository(MusicDbContext musicDbContext) : ISongRepository
     {
-        public async Task<int> AddNewSongAsync(Song song)
+        public async Task<Song> AddNewSongAsync(Song song)
         {
-            var myObject = await musicDbContext.Songs.AddAsync(song);
+            var myObject = musicDbContext.Songs.Add(song).Entity;
             await musicDbContext.SaveChangesAsync();
-            return myObject.Entity.Id;
+            return myObject;
         }
 
-        public async void DeleteSongAsync(int id)
+        public async Task<List<Artist>> AddSongsByArtists(int idSong,Artist artist)
+        {
+            var song = await GetSongByIdAsync(idSong);
+            song.Artists.Add(artist);
+            await musicDbContext.SaveChangesAsync();
+            return song.Artists;
+        }
+
+        public async Task<int?> DeleteSongAsync(int id)
         {
             var findSong = await musicDbContext.Songs.FindAsync(id);
             if (findSong != null)
             {
                 musicDbContext.Songs.Remove(findSong);
                 await musicDbContext.SaveChangesAsync();
+                return findSong.AlbumId;
             }
+            return 0;
         }
 
         public async Task<IEnumerable<Song>> GetAllAsync()
@@ -30,9 +41,21 @@ namespace Music.Data.Repositories
             return songs;
         }
 
-        public async Task<Song> GetSongByIdAsync(int id)
+        public async Task<List<Song>> GetSongByAlbum(int albumId)
         {
-            return await musicDbContext.Songs.FirstAsync(a => a.Id == id);
+            var songs = await musicDbContext.Songs
+                .Where(s => s.AlbumId == albumId)
+                .AsNoTracking()
+                .ToListAsync();
+            return songs;
+        }
+
+        public async Task<Song> GetSongByIdAsync(int? id)
+        {
+            return await musicDbContext.Songs
+                .Include(s => s.Artists)
+                .Include(s => s.Album)
+                .FirstAsync(a => a.Id == id);
         }
 
         public async Task<List<Song>> GetSongsByArtistAsync(int idArtist, int limit)
@@ -55,7 +78,7 @@ namespace Music.Data.Repositories
             return songs;
         }
 
-        public async Task<int> UpdateSongAsync(Song song)
+        public async Task<int> UpdateSongAsync(Song song, int[] selectedArtists)
         {
             var existingSong = await musicDbContext.Songs
             .Include(s => s.Artists)
@@ -66,9 +89,14 @@ namespace Music.Data.Repositories
                 existingSong.UrlSong = song.UrlSong;
                 existingSong.AlbumId = song.AlbumId;
                 existingSong.Album = song.Album;
-                if (song.Artists != null)
+               
+                if (selectedArtists.Any())
                 {
-                    existingSong.Artists = song.Artists;
+                    existingSong.Artists.Clear();
+                    foreach (var artist in musicDbContext.Artists.Where(a => selectedArtists.Contains(a.Id)))
+                    {
+                        existingSong.Artists.Add(artist);
+                    }
                 }
                 await musicDbContext.SaveChangesAsync();
                 return existingSong.Id;

@@ -5,13 +5,15 @@
 }
 
 <h1>Все альбомы</h1>
-
-<p>
-    <a asp-action="Create" asp-route-id="@ViewBag.ArtistId"
-       class="btn btn-primary">
-       <i class="bi bi-pencil"></i> Добавить альбом
-    </a>
-</p>
+    @if (ViewBag.ArtistId != null)
+    {
+        <p>
+            <a asp-action="Create" asp-route-id="@ViewBag.ArtistId"
+               class="btn btn-primary">
+                <i class="bi bi-pencil"></i> Добавить альбом
+            </a>
+        </p>
+    }
 <div class="container py-5">
     <h1 class="text-center mb-5">Альбомы</h1>
 
@@ -31,16 +33,16 @@
                                 <h5 class="card-title">@album.Name</h5>
                                 <!-- Кнопки действий -->
                                 <div class="d-flex flex-wrap gap-2">
-                                    <!-- Изменение альбома -->
+                                    @* <!-- Изменение альбома -->
                                     <a asp-controller="Albums" asp-action="Edit" asp-route-id="@album.Id"
                                        class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-collection"></i> Изменить
-                                    </a>
-                                @* <!-- Песни -->
-                                   <a asp-controller="Song" asp-action="SoundLibrary" asp-route-artistId="@artist.Id"
+                                    </a> *@
+                                    <!-- Песни -->
+                                   <a asp-controller="Songs" asp-action="SoundLibraryAlbum" asp-route-albumId="@album.Id"
                                         class="btn btn-outline-primary btn-sm">
                                           <i class="bi bi-music-note-list"></i> Песни
-                                   </a> *@
+                                   </a>
                                     <!-- Изменить -->
                                     <a asp-action="Edit" asp-route-id="@album.Id"
                                        class="btn btn-outline-warning btn-sm">

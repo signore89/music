@@ -1,0 +1,60 @@
+﻿@model Music.Models.Song
+
+@{
+    ViewData["Title"] = "Edit";
+    var listArtists = ViewBag.Artists as IEnumerable<Artist>;
+}
+
+<h1>Редактирование</h1>
+
+<h4>Трэка</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @* <input type="hidden" asp-for="Id" /> *@
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Название</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UrlSong" class="control-label">URL трэка</label>
+                <input asp-for="UrlSong" class="form-control" />
+                <span asp-validation-for="UrlSong" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AlbumId" class="control-label">ID альбома</label>
+                <select asp-for="AlbumId" class="form-control" asp-items="ViewBag.Albums">
+                    <option selected="selected" disabled="disabled">Выберите альбом</option>
+                </select>
+            </div>
+            <div class="form-group">
+           
+                @foreach (Artist artist in listArtists!)
+                {
+                    <input type="checkbox" name="selectedArtists" value="@artist.Id"
+                    @(Model.Artists.Any(a => a.Name == artist.Name) ? "checked=\"checked\"" : "") />@artist.Name <br />
+                }
+             </div>
+            @* <div class="form-group">
+                <label asp-for="Name" class="control-label">Имя артиста</label>
+                <select asp-for="Name" class="form-control" asp-items="ViewBag.Artists">
+                    <option selected="selected" disabled="disabled">Выберите артиста</option>
+                </select>
+            </div> *@
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Вернуться назад</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

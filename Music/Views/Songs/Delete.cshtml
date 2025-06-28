@@ -1,14 +1,11 @@
-﻿@model Music.Models.Album
+﻿@model Music.Models.Song
 
 @{
     ViewData["Title"] = "Delete";
 }
 
-<h1>Удаление</h1>
-
-<h3>Вы действительно хотите удалить</h3>
+<h3>Вы действительно хотите удалить трэк?</h3>
 <div>
-    <h4>Альбом</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -18,22 +15,16 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.YearOfIssue)
+            @Html.DisplayNameFor(model => model.UrlSong)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.YearOfIssue)
+            @Html.DisplayFor(model => model.UrlSong)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UrlImg)
+            @Html.DisplayNameFor(model => model.Album)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UrlImg)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Artist)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Artist.Id)
+            @Html.DisplayFor(model => model.Album.Id)
         </dd>
     </dl>
     

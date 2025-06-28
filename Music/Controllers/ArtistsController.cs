@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
 
@@ -7,10 +8,14 @@ namespace Music.Controllers
     public class ArtistsController : Controller
     {
         private readonly IArtistRepository _context;
+        private readonly ISongRepository _contextSong;
+        private readonly IAlbumRepository _contextAlbum;
 
-        public ArtistsController(IArtistRepository context) // ВОЗМОЖНО ПРЕЙДЕТЬСЯ ЗАРЕГИИСТРИРОВАТЬ КАК СИНГЛТОН 
+        public ArtistsController(IArtistRepository context, ISongRepository contextSong, IAlbumRepository contextAlbum)
         {
             _context = context;
+            _contextAlbum = contextAlbum;
+            _contextSong = contextSong;
         }
 
         // GET: Artists
@@ -73,25 +78,17 @@ namespace Music.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Albums = await _contextAlbum.GetAllAsync();
+            ViewBag.Songs = await _contextSong.GetAllAsync();
             return View(artist);
         }
 
         // POST: Artists/Edit/5
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UrlImg")] Artist artist)
+        public async Task<IActionResult> Edit (Artist artist, int[] selectedSongs, int[] selectedAlbums)
         {
-            int idNewArtist = 0;
-            if (id != artist.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                idNewArtist = await _context.UpdateArtistAsync(artist);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(await _context.GetArtistByIdAsync(idNewArtist));
+            var updateArtist = await _context.UpdateArtistAsync(artist,selectedSongs,selectedAlbums);
+            return RedirectToAction(nameof(Details), new { id = updateArtist.Id });
         }
 
         // GET: Artists/Delete/5

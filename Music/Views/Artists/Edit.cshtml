@@ -2,9 +2,9 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var listAlbums = ViewBag.Albums as IEnumerable<Album>;
+    var listSongs = ViewBag.Songs as IEnumerable<Song>;
 }
-
-<h1>Изменить</h1>
 
 <h4>Изменение артиста</h4>
 <hr />
@@ -12,7 +12,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            @* <input type="hidden" asp-for="Id" /> *@
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -23,8 +23,30 @@
                 <input asp-for="UrlImg" class="form-control" />
                 <span asp-validation-for="UrlImg" class="text-danger"></span>
             </div>
+            <p class="fw-bold">Альбомы</p>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                @if(listAlbums != null || listAlbums.Count() != 0)
+                {
+                    @foreach (Album album in listAlbums)
+                    {
+                        <input type="checkbox" name="selectedAlbums" value="@album.Id"
+                        @(Model.Albums.Any(a => a.Id == album.Id) ? "checked=\"checked\"" : "") />@album.Name <br />
+                    } 
+                }
+             </div>
+             <p class="fw-bold">Трэки</p>
+             <div class="form-group">
+                @if(listSongs != null || listSongs.Count() != 0)
+                {
+                    @foreach (Song song in listSongs)
+                    {
+                        <input type="checkbox" name="selectedSongs" value="@song.Id"
+                        @(Model.Songs.Any(s => s.Id == song.Id) ? "checked=\"checked\"" : "") />@song.Name <br />
+                    } 
+                }
+             </div>
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </form>
     </div>
