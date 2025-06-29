@@ -9,6 +9,6 @@ public class Album
     public int ArtistId { get; set; }
     public required Artist Artist { get; set; }
     public List<Song>? Songs { get; set; } = new List<Song>();
-    public List<User>? Users { get; set; } = new List<User>();
+    public List<ApplicationUser>? Users { get; set; } = new List<ApplicationUser>();
 
 }

@@ -8,5 +8,5 @@ public class Song
     public int? AlbumId { get; set; }
     public Album? Album { get; set; }
     public List<Artist> Artists { get; set; } = new List<Artist>();
-    public List<User> Users { get; set; } = new List<User>();
+    public List<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
 }

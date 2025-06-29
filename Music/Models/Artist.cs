@@ -7,5 +7,5 @@ public class Artist
     public  string? UrlImg { get; set; }
     public List<Album>? Albums { get; set; } = new List<Album>();
     public List<Song>? Songs { get; set; } = new List<Song>();
-    public List<User>? Users { get; set; } = new List<User>();
+    public List<ApplicationUser>? Users { get; set; } = new List<ApplicationUser>();
 }

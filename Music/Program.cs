@@ -1,12 +1,17 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Music.Data.Repositories;
 using Music.Data.Repositories.Interfaces;
+using Music.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connection = builder.Configuration.GetConnectionString("MusicDbConnection");
 builder.Services.AddDbContext<MusicDbContext>(options =>
     options.UseNpgsql(connection));
+
+builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
+    .AddEntityFrameworkStores<MusicDbContext>();
 
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
@@ -15,8 +20,14 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-//app.UseHttpsRedirection();
-//app.UseStaticFiles();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapDefaultControllerRoute();
 
 app.Run();

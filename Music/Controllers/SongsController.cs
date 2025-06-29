@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
@@ -6,6 +7,7 @@ using Music.ViewsModels;
 
 namespace Music.Controllers
 {
+    [Authorize]
     public class SongsController : Controller
     {
         private readonly ISongRepository _context;

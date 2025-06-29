@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Music.Data.Repositories.Interfaces;
 using Music.ViewsModels;
 
 namespace Music.Controllers
 {
+    [Authorize]
     public class SearchController : Controller
     {
         private readonly IArtistRepository _artistRepository;
