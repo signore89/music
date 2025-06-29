@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
+using Music.ViewsModels;
 
 namespace Music.Controllers
 {
@@ -15,23 +16,31 @@ namespace Music.Controllers
             _context = context;
             _artistRepository = artistRepository;
         }
+        const int pageSize = 2;
 
         // GET: Albums
-        public async Task<IActionResult> Index(int? idArtist = null)
+        public async Task<IActionResult> Index(int? idArtist = null, int page = 1)
         {
+            if (page < 1)
+            {
+                page = 1;
+            }
+            var count = await _context.GetQuantity();
+            var pager = new PageViewModel(count, page);
+            var skip = (page - 1) * pageSize;
             if (idArtist != null)
             {
                 ViewBag.ArtistId = idArtist;
-                var albums = await _context.GetAlbumsByArtist(idArtist);
+                var albums = await _context.GetAlbumsByArtist(idArtist, skip, pager.PageSize);
+                ViewBag.Pager = pager;
                 return View(albums);
             }
             else
             {
-                var albums = await _context.GetAllAsync();
+                var albums = await _context.GetPaginationAsync(skip,pager.PageSize);
+                ViewBag.Pager = pager;
                 return View(albums);
-            }
-               
-            
+            }    
         }
 
         // GET: Albums/Details/5
@@ -126,19 +135,26 @@ namespace Music.Controllers
             return RedirectToAction(nameof(Index), new { idArtist = idArtistDeletedAlbum });
         }
         // GET: Albums/id
-        public async Task<IActionResult> AlbumsByArtist(int? id)
+        public async Task<IActionResult> AlbumsByArtist(int? id, int page = 1)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var albums = await _context.GetAlbumsByArtist(id);
+            if (page < 1)
+            {
+                page = 1;
+            }
+            var count = await _context.GetQuantity();
+            var pager = new PageViewModel(count, page);
+            var skip = (page - 1) * pageSize;
+            var albums = await _context.GetAlbumsByArtist(id, skip, pager.PageSize);
             if (albums == null)
             {
                 return NotFound();
             }
             ViewBag.ArtistId = id;
+            ViewBag.Pager = pager;
             return View("Index",albums);
         }
     }

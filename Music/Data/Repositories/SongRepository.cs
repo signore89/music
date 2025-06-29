@@ -1,8 +1,6 @@
-﻿using Microsoft.Build.Logging;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
-using static System.Net.WebRequestMethods;
 
 namespace Music.Data.Repositories
 {
@@ -38,7 +36,20 @@ namespace Music.Data.Repositories
         public async Task<IEnumerable<Song>> GetAllAsync()
         {
             var songs = await musicDbContext.Songs.AsNoTracking().ToListAsync();
+            
             return songs;
+        }
+
+        public async Task<IEnumerable<Song>> GetPaginationAsync(int quantity, int take)
+        {
+            var songs = await musicDbContext.Songs.Skip(quantity).Take(take).AsNoTracking().ToListAsync();
+            return songs;
+        }
+
+        public async Task<int> GetQuantity()
+        {
+            var temp = await musicDbContext.Songs.CountAsync();
+            return temp;
         }
 
         public async Task<List<Song>> GetSongByAlbum(int albumId)
@@ -68,11 +79,10 @@ namespace Music.Data.Repositories
             return songs;
         }
 
-        public async Task<List<Song>> GetSongsByNameAsync(string searchString, int limit)
+        public async Task<List<Song>> GetSongsByNameAsync(string searchString)
         {
             var songs = await musicDbContext.Songs
            .Where(a => a.Name.Contains(searchString))
-           .Skip(limit)
            .AsNoTracking()
            .ToListAsync();
             return songs;

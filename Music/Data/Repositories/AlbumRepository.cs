@@ -29,11 +29,11 @@ public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
         return albums;
     }
 
-    public async Task<List<Album>> GetAlbumsByNameAsync(string searchString, int limit)
+    public async Task<List<Album>> GetAlbumsByNameAsync(string searchString)
     {
+
         var albums = await musicDbContext.Albums
             .Where(a => a.Name.Contains(searchString))
-            .Skip(limit)
             .AsNoTracking()
             .ToListAsync();
         return albums;
@@ -83,12 +83,26 @@ public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
         return 0;
     }
 
-    public async Task<List<Album>> GetAlbumsByArtist(int? id)
+    public async Task<List<Album>> GetAlbumsByArtist(int? id, int quantity, int take)
     {
         var albums = await musicDbContext.Albums
             .Where(a => a.ArtistId == id)
+            .Skip(quantity)
+            .Take(take)
             .AsNoTracking()
             .ToListAsync();
         return albums;
+    }
+
+    public async Task<IEnumerable<Album>> GetPaginationAsync(int quantity, int take)
+    {
+        var albums = await musicDbContext.Albums.Skip(quantity).Take(take).AsNoTracking().ToListAsync();
+        return albums;
+    }
+
+    public async Task<int> GetQuantity()
+    {
+        var temp = await musicDbContext.Albums.CountAsync();
+        return temp;
     }
 }

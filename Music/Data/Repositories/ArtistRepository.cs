@@ -44,14 +44,25 @@ namespace Music.Data.Repositories
                 .FirstAsync(a => a.Id == id);
         }
 
-        public async Task<List<Artist>> GetArtistsByNameAsync(string searchString, int limit)
+        public async Task<List<Artist>> GetArtistsByNameAsync(string searchString)
         {
             var artists = await musicDbContext.Artists
            .Where(a => a.Name.Contains(searchString))
-           .Skip(limit)
            .AsNoTracking()
            .ToListAsync();
             return artists;
+        }
+
+        public async Task<IEnumerable<Artist>> GetPaginationAsync(int quantity, int take)
+        {
+            var artists = await musicDbContext.Artists.Skip(quantity).Take(take).AsNoTracking().ToListAsync();
+            return artists;
+        }
+
+        public async Task<int> GetQuantity()
+        {
+            var temp = await musicDbContext.Artists.CountAsync();
+            return temp;
         }
 
         public async Task<Artist> UpdateArtistAsync(Artist artist, int[] selectedSongs, int[] selectedAlbums)

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
+using Music.ViewsModels;
 
 namespace Music.Controllers
 {
@@ -18,10 +18,19 @@ namespace Music.Controllers
             _contextSong = contextSong;
         }
 
+        const int pageSize = 2;
         // GET: Artists
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var artists = await _context.GetAllAsync();
+            if (page < 1)
+            {
+                page = 1;
+            }
+            var count = await _context.GetQuantity();
+            var pager = new PageViewModel(count, page);
+            var skip = (page - 1) * pageSize;
+            var artists = await _context.GetPaginationAsync(skip,pager.PageSize);
+            ViewBag.Pager = pager;
             return View(artists);
         }
         //// GET: AllArtistsByAlbum                              ПАГИНАЦИЯ
