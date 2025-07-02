@@ -62,6 +62,7 @@ namespace Music.Controllers
             return View(song);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Songs/Create
         public IActionResult Create(int? idAlbum)
         {
@@ -82,6 +83,7 @@ namespace Music.Controllers
             return View(song);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Songs/Create
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] Song song)
@@ -92,6 +94,7 @@ namespace Music.Controllers
             return RedirectToAction(nameof(SoundLibraryAlbum), new { albumId = newSong.AlbumId});
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Songs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -112,6 +115,7 @@ namespace Music.Controllers
             return View(song);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Songs/Edit/5
         [HttpPost]
         public async Task<IActionResult> Edit(Song song, int[] selectedArtists)
@@ -120,6 +124,7 @@ namespace Music.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Songs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -137,6 +142,7 @@ namespace Music.Controllers
             return View(album);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Songs/Delete/5
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -21,6 +21,8 @@ namespace Music.Controllers
         }
 
         const int pageSize = 2;
+
+
         // GET: Artists
         public async Task<IActionResult> Index(int page = 1)
         {
@@ -59,12 +61,14 @@ namespace Music.Controllers
             return View(artist);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Artists/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Artists/Create
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Name,UrlImg")] Artist artist)
@@ -77,6 +81,7 @@ namespace Music.Controllers
             return View(artist);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Artists/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -94,6 +99,7 @@ namespace Music.Controllers
             return View(artist);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Artists/Edit/5
         [HttpPost]
         public async Task<IActionResult> Edit (Artist artist, int[] selectedSongs, int[] selectedAlbums)
@@ -102,6 +108,7 @@ namespace Music.Controllers
             return RedirectToAction(nameof(Details), new { id = updateArtist.Id });
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Artists/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -119,6 +126,7 @@ namespace Music.Controllers
             return View(artist);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Artists/Delete/5
         [HttpPost, ActionName("Delete")]
         public  async Task<IActionResult> DeleteConfirmed(int id)

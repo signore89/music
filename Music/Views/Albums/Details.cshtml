@@ -1,4 +1,6 @@
-﻿@model Music.Models.Album
+﻿@using Microsoft.AspNetCore.Identity
+@model Music.Models.Album
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Details";
@@ -37,6 +39,10 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Изменить</a> |
+    @if (User.IsInRole("Admin"))// SignInManager.IsSignedIn(User) && проверяет зарегистрированный пользователь  или нет
+    {
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Изменить</a>
+    }
+     
     <a asp-action="Index">Вернуться назад</a>
 </div>

@@ -14,9 +14,13 @@
 
 <h1>Все треки</h1>
 
-<p>
-    <a asp-action="Create">добавить песенку</a>
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create">добавить песенку</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -44,9 +48,16 @@
                 @Html.DisplayFor(modelItem => song.Album.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@song.Id">Изменить</a> |
-                <a asp-action="Details" asp-route-id="@song.Id">Рассмотреть</a> |
-                <a asp-action="Delete" asp-route-id="@song.Id">Удалить</a>
+                @if (User.IsInRole("Admin"))
+                {
+                <a asp-action="Edit" asp-route-id="@song.Id">Изменить</a>
+                < a asp - action = "Delete" asp - route - id = "@song.Id" > Удалить </ a >
+                }
+                else if (User.IsInRole("User"))
+                {
+                    // логика добавление удаление из избранного
+                }
+                <a asp-action="Details" asp-route-id="@song.Id">Рассмотреть</a> 
             </td>
         </tr>
 }

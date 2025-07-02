@@ -14,4 +14,5 @@ public interface IAlbumRepository
     public Task<int> DeleteAlbumAsync(int id);
     public Task<List<Album>> GetAlbumsByArtist(int? id,int quantity, int take);
     public Task<int> GetQuantity();
+    public Task<int> GetQuantityByArtist(int? artistId);
 }

@@ -105,4 +105,12 @@ public class AlbumRepository(MusicDbContext musicDbContext) : IAlbumRepository
         var temp = await musicDbContext.Albums.CountAsync();
         return temp;
     }
+
+    public async Task<int> GetQuantityByArtist(int? artistId)
+    {
+        var temp = await musicDbContext.Albums
+            .Where(a => a.ArtistId == artistId)
+            .CountAsync();
+        return temp;
+    }
 }

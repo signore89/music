@@ -62,6 +62,7 @@ namespace Music.Controllers
             return View(album);
         }
 
+        [Authorize(Roles = "Admin")]
         //GET: Albums/Create
         public IActionResult Create(int id)
         {
@@ -70,6 +71,7 @@ namespace Music.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Albums/Create
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Name,YearOfIssue,UrlImg")] Album album)
@@ -80,6 +82,7 @@ namespace Music.Controllers
             return RedirectToAction(nameof(Index),new {idArtist = newAlbum.ArtistId});
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Albums/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -98,6 +101,7 @@ namespace Music.Controllers
             return View(album);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Albums/Edit/5
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,YearOfIssue,UrlImg,ArtistId")] Album album)
@@ -112,6 +116,7 @@ namespace Music.Controllers
             //ViewData["ArtistId"] = new SelectList(, "Id", "Id", album.ArtistId);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Albums/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -129,6 +134,7 @@ namespace Music.Controllers
             return View(album);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Albums/Delete/5
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -136,6 +142,8 @@ namespace Music.Controllers
             var idArtistDeletedAlbum = await _context.DeleteAlbumAsync(id);
             return RedirectToAction(nameof(Index), new { idArtist = idArtistDeletedAlbum });
         }
+
+
         // GET: Albums/id
         public async Task<IActionResult> AlbumsByArtist(int? id, int page = 1)
         {
@@ -147,7 +155,7 @@ namespace Music.Controllers
             {
                 page = 1;
             }
-            var count = await _context.GetQuantity();
+            var count = await _context.GetQuantityByArtist(id);
             var pager = new PageViewModel(count, page);
             var skip = (page - 1) * pageSize;
             var albums = await _context.GetAlbumsByArtist(id, skip, pager.PageSize);

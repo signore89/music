@@ -1,5 +1,7 @@
-﻿@using Music.ViewsModels
+﻿@using Microsoft.AspNetCore.Identity
+@using Music.ViewsModels
 @model IEnumerable<Music.Models.Album>
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +15,7 @@
 }
 
 <h1>Все альбомы</h1>
-    @if (ViewBag.ArtistId != null)
+@if (ViewBag.ArtistId != null && User.IsInRole("Admin"))
     {
         <p>
             <a asp-action="Create" asp-route-id="@ViewBag.ArtistId"
@@ -51,6 +53,8 @@
                                         class="btn btn-outline-primary btn-sm">
                                           <i class="bi bi-music-note-list"></i> Песни
                                    </a>
+                                @if (User.IsInRole("Admin"))
+                                {
                                     <!-- Изменить -->
                                     <a asp-action="Edit" asp-route-id="@album.Id"
                                        class="btn btn-outline-warning btn-sm">
@@ -62,6 +66,12 @@
                                        class="btn btn-outline-danger">
                                         <i class="bi bi-pencil"></i> Удалить
                                     </a>
+                                }
+                                else if (User.IsInRole("User"))
+                                {
+                                   // логика добавление удаление из избранного
+                                }
+
                                     <!-- Детали -->
                                     <a asp-action="Details" asp-route-id="@album.Id"
                                        class="btn btn-outline-warning btn-sm">
