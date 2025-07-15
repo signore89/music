@@ -1,7 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Music.ViewsModels
 @model IEnumerable<Music.Models.Artist>
-@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Index";
@@ -13,8 +12,6 @@
         pageNo = pager.CurrentPage;
     }
 }
-
-<h1>Все кто есть</h1>
 
 @if (User.IsInRole("Admin"))
 {
@@ -48,7 +45,7 @@
                             <div class="d-flex flex-wrap gap-2">
 
                                             <!-- Альбомы -->
-                                            <a asp-controller="Albums" asp-action="AlbumsByArtist" asp-route-id="@artist.Id"
+                                            <a asp-controller="Albums" asp-action="Index" asp-route-idArtist="@artist.Id"
                                                class="btn btn-outline-primary btn-sm">
                                                 <i class="bi bi-collection"></i> Альбомы
                                             </a>
@@ -74,7 +71,18 @@
                         }
                         else if (User.IsInRole("User"))
                         {
-                            // логика добавление удаление из избранного
+                            <button class="favorite-btn @((ViewBag.UserFavoritesArtists as ICollection<int>).Contains(artist.Id) ? "active" : "")"
+                                   
+                                data-id="@artist.Id">
+                                @if ((ViewBag.UserFavoritesArtists as ICollection<int>).Contains(artist.Id))
+                                {
+                                    <span>★ В избранном</span>
+                                }
+                                else
+                                {
+                                    <span>☆ Добавить в избранное</span>
+                                }
+                            </button> 
                         }
 
                             <!-- Детали -->
@@ -103,3 +111,28 @@
         </ul>
     }
 </div>
+
+@section Scripts 
+{
+    <script>
+        $(document).ready(function() {
+            $('.favorite-btn').click(function() {
+                var btn = $(this);
+                var artistId = btn.data('id');
+
+                if (btn.hasClass('active')) {
+                    $.post('@Url.Action("RemoveArtist", "Favorites")', { artistId: artistId }, function() {
+                        btn.removeClass('active');
+                        btn.html('<span>☆ Добавить в избранное</span>');
+                    });
+                } else {
+                    $.post('@Url.Action("AddArtist", "Favorites")', { artistId: artistId }, function() {
+                        btn.addClass('active');
+                        btn.html('<span>★ В избранном</span>');
+                    });
+                }
+            });
+        });
+    </script>
+}
+

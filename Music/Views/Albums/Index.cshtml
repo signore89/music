@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Music.Services
 @using Music.ViewsModels
 @model IEnumerable<Music.Models.Album>
-@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Index";
@@ -69,7 +69,17 @@
                                 }
                                 else if (User.IsInRole("User"))
                                 {
-                                   // логика добавление удаление из избранного
+                                    <button class="favorite-btn @((ViewBag.UserFavoritesAlbums as ICollection<int>).Contains(album.Id) ? "active" : "")"
+                                        data-id="@album.Id">
+                                        @if ((ViewBag.UserFavoritesAlbums as ICollection<int>).Contains(album.Id))
+                                        {
+                                            <span>★ В избранном</span>
+                                        }
+                                        else
+                                        {
+                                            <span>☆ Добавить в избранное</span>
+                                        }
+                                    </button>
                                 }
 
                                     <!-- Детали -->
@@ -97,3 +107,27 @@
         </ul>
     }
 </div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.favorite-btn').click(function() {
+                var btn = $(this);
+                var albumId = btn.data('id');
+
+                if (btn.hasClass('active')) {
+                    $.post('@Url.Action("RemoveAlbum", "Favorites")', { albumId: albumId }, function() {
+                        btn.removeClass('active');
+                        btn.html('<span>☆ Добавить в избранное</span>');
+                    });
+                } else {
+                    $.post('@Url.Action("AddAlbums", "Favorites")', { albumId: albumId }, function() {
+                        btn.addClass('active');
+                        btn.html('<span>★ В избранном</span>');
+                    });
+                }
+            });
+        });
+    </script>
+}

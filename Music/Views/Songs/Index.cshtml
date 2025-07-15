@@ -55,7 +55,17 @@
                 }
                 else if (User.IsInRole("User"))
                 {
-                    // логика добавление удаление из избранного
+                        <button class="favorite-btn @((ViewBag.UserFavoritesSongs as ICollection<int>).Contains(song.Id) ? "active" : "")"
+                                data-id="@song.Id">
+                            @if ((ViewBag.UserFavoritesSongs as ICollection<int>).Contains(song.Id))
+                            {
+                                <span>★ В избранном</span>
+                            }
+                            else
+                            {
+                                <span>☆ Добавить в избранное</span>
+                            }
+                        </button>
                 }
                 <a asp-action="Details" asp-route-id="@song.Id">Рассмотреть</a> 
             </td>
@@ -77,3 +87,26 @@
         </ul>
     }
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.favorite-btn').click(function() {
+                var btn = $(this);
+                var songId = btn.data('id');
+
+                if (btn.hasClass('active')) {
+                    $.post('@Url.Action("RemoveSong", "Favorites")', { songId: songId }, function() {
+                        btn.removeClass('active');
+                        btn.html('<span>☆ Добавить в избранное</span>');
+                    });
+                } else {
+                    $.post('@Url.Action("AddSong", "Favorites")', { songId: songId }, function() {
+                        btn.addClass('active');
+                        btn.html('<span>★ В избранном</span>');
+                    });
+                }
+            });
+        });
+    </script>
+}

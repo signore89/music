@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
+using Music.Services.Interfaces;
 using Music.ViewsModels;
 
 namespace Music.Controllers
@@ -12,11 +13,18 @@ namespace Music.Controllers
     {
         private readonly IAlbumRepository _context;
         private readonly IArtistRepository _artistRepository;
+        private readonly IFavoriteService _favoriteService;
+        private readonly IUserProvider _userProvider;
+        private readonly string prefixKey = "Albums";
 
-        public AlbumsController(IAlbumRepository context, IArtistRepository artistRepository)
+        public AlbumsController(IAlbumRepository context, IArtistRepository artistRepository
+            , IFavoriteService favoriteService, IUserProvider userProvider)
         {
             _context = context;
             _artistRepository = artistRepository;
+            _favoriteService = favoriteService;
+            _favoriteService.AddCacheKeyPrefix(prefixKey);
+            _userProvider = userProvider;
         }
         const int pageSize = 2;
 
@@ -27,11 +35,14 @@ namespace Music.Controllers
             {
                 page = 1;
             }
-            var count = await _context.GetQuantity();
-            var pager = new PageViewModel(count, page);
-            var skip = (page - 1) * pageSize;
+            
+            ViewBag.UserFavoritesAlbums = await _favoriteService
+                .GetUserFavoritesAlbumsAsync(_userProvider.GetCurrentUserId());
             if (idArtist != null)
             {
+                var count = await _context.GetQuantityByArtist(idArtist);
+                var pager = new PageViewModel(count, page);
+                var skip = (page - 1) * pageSize;
                 ViewBag.ArtistId = idArtist;
                 var albums = await _context.GetAlbumsByArtist(idArtist, skip, pager.PageSize);
                 ViewBag.Pager = pager;
@@ -39,7 +50,10 @@ namespace Music.Controllers
             }
             else
             {
-                var albums = await _context.GetPaginationAsync(skip,pager.PageSize);
+                var count = await _context.GetQuantity();
+                var pager = new PageViewModel(count, page);
+                var skip = (page - 1) * pageSize;
+                var albums = await _context.GetPaginationAsync(skip, pager.PageSize);
                 ViewBag.Pager = pager;
                 return View(albums);
             }    
@@ -78,7 +92,6 @@ namespace Music.Controllers
         {
             album.ArtistId = (int)TempData["ArtistId"];
             var newAlbum = await _context.AddNewAlbumAsync(album);
-            //ViewData["ArtistId"] = new SelectList(_context.Artists, "Id", "Id", album.ArtistId);
             return RedirectToAction(nameof(Index),new {idArtist = newAlbum.ArtistId});
         }
 

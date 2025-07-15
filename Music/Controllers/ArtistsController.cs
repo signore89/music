@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
+using Music.Services.Interfaces;
 using Music.ViewsModels;
 
 namespace Music.Controllers
@@ -12,12 +13,20 @@ namespace Music.Controllers
         private readonly IArtistRepository _context;
         private readonly ISongRepository _contextSong;
         private readonly IAlbumRepository _contextAlbum;
+        private readonly IFavoriteService _favoriteService;
+        private readonly IUserProvider _userProvider;
+        private readonly string prefixKey = "Artists";
 
-        public ArtistsController(IArtistRepository context, ISongRepository contextSong, IAlbumRepository contextAlbum)
+        public ArtistsController(IArtistRepository context, ISongRepository contextSong
+                                    , IAlbumRepository contextAlbum, IFavoriteService favoriteService
+                                    , IUserProvider userProvider)
         {
             _context = context;
             _contextAlbum = contextAlbum;
             _contextSong = contextSong;
+            _favoriteService = favoriteService;
+            _favoriteService.AddCacheKeyPrefix(prefixKey);
+            _userProvider = userProvider;
         }
 
         const int pageSize = 2;
@@ -30,6 +39,8 @@ namespace Music.Controllers
             {
                 page = 1;
             }
+            ViewBag.UserFavoritesArtists = await _favoriteService
+                .GetUserFavoritesArtistsAsync(_userProvider.GetCurrentUserId());
             var count = await _context.GetQuantity();
             var pager = new PageViewModel(count, page);
             var skip = (page - 1) * pageSize;
@@ -37,14 +48,7 @@ namespace Music.Controllers
             ViewBag.Pager = pager;
             return View(artists);
         }
-        //// GET: AllArtistsByAlbum                              ПАГИНАЦИЯ
-        //public async Task<IActionResult> GetAllArtistsByAlbum(int idAlbum)
-        //{
-        //    var artists = await _context.GetAllArtistByAlbumAsync(idAlbum);
-        //    return RedirectToAction(nameof(Index));
-        //}
 
-        // GET: Artists/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

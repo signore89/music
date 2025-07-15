@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
+using Music.Services.Interfaces;
 using Music.ViewsModels;
 
 namespace Music.Controllers
@@ -13,12 +14,19 @@ namespace Music.Controllers
         private readonly ISongRepository _context;
         private readonly IArtistRepository _contextArtist;
         private readonly IAlbumRepository _contextAlbum;
+        private readonly IFavoriteService _favoriteService;
+        private readonly IUserProvider _userProvider;
+        private readonly string prefixKey = "Songs";
 
-        public SongsController(ISongRepository context, IArtistRepository contextArtist, IAlbumRepository contextAlbum)
+        public SongsController(ISongRepository context, IArtistRepository contextArtist
+            , IAlbumRepository contextAlbum, IFavoriteService favoriteService, IUserProvider userProvider)
         {
             _context = context;
             _contextAlbum = contextAlbum;
             _contextArtist = contextArtist;
+            _favoriteService = favoriteService;
+            _favoriteService.AddCacheKeyPrefix(prefixKey);
+            _userProvider = userProvider;
         }
 
         const int pageSize = 2;
@@ -30,6 +38,8 @@ namespace Music.Controllers
             {
                 page = 1;
             }
+            ViewBag.UserFavoritesSongs = await _favoriteService
+                .GetUserFavoritesSongsAsync(_userProvider.GetCurrentUserId());
             var count = await _context.GetQuantity();
             var pager = new PageViewModel(count, page);
             var skip = (page - 1) * pageSize;

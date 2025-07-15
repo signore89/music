@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Music.Data.Repositories;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
+using Music.Services;
+using Music.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,13 @@ builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 builder.Services.AddScoped<ISongRepository, SongRepository>();
+builder.Services.AddTransient<IFavoriteService, FavoriteService>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserProvider, UserProvider>();
+
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 
