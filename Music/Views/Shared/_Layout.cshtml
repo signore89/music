@@ -107,6 +107,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Search" asp-action="Index">Поиск</a>
                         </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="ArtistAddImg" asp-action="Create">Добавить артиста с картинкой</a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav ml-auto">
                         @*Если пользователем  подписан-в дисплей выход ссылке*@
