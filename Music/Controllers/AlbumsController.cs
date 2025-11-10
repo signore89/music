@@ -31,6 +31,7 @@ namespace Music.Controllers
         // GET: Albums
         public async Task<IActionResult> Index(int? idArtist = null, int page = 1)
         {
+            ViewBag.Title = "Главная страница";
             if (page < 1)
             {
                 page = 1;
@@ -62,6 +63,7 @@ namespace Music.Controllers
         // GET: Albums/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.Title = "Описание альбома";
             if (id == null)
             {
                 return NotFound();
@@ -80,6 +82,7 @@ namespace Music.Controllers
         //GET: Albums/Create
         public IActionResult Create(int id)
         {
+            ViewBag.Title = "Страница создания альбома";
             TempData["ArtistId"] = id;
             //ViewData["ArtistId"] ;
             return View();
@@ -99,6 +102,7 @@ namespace Music.Controllers
         // GET: Albums/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.Title = "Страница изменения альбома";
             if (id == null)
             {
                 return NotFound();
@@ -133,6 +137,7 @@ namespace Music.Controllers
         // GET: Albums/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.Title = "Страница удалления альбома";
             if (id == null)
             {
                 return NotFound();
@@ -160,6 +165,7 @@ namespace Music.Controllers
         // GET: Albums/id
         public async Task<IActionResult> AlbumsByArtist(int? id, int page = 1)
         {
+            ViewBag.Title = "Конкретный альбом";
             if (id == null)
             {
                 return NotFound();

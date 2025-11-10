@@ -4,7 +4,6 @@
 @model IEnumerable<Music.Models.Album>
 
 @{
-    ViewData["Title"] = "Index";
     var pager = new PageViewModel();
     var pageNo = 0;
     if (ViewBag.Pager != null)

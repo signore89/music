@@ -25,11 +25,13 @@ namespace Music.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            ViewBag.Title = "Страница регистрации";
             return View();
         }
         [HttpGet]
         public IActionResult Login()
         {
+            ViewBag.Title = "Страница входа";
             return View();
         }
 
