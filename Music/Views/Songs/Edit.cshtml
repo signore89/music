@@ -1,11 +1,9 @@
 ﻿@model Music.Models.Song
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редактирование";
     var listArtists = ViewBag.Artists as IEnumerable<Artist>;
 }
-
-<h1>Редактирование</h1>
 
 <h4>Трэка</h4>
 <hr />
@@ -38,12 +36,6 @@
                     @(Model.Artists.Any(a => a.Name == artist.Name) ? "checked=\"checked\"" : "") />@artist.Name <br />
                 }
              </div>
-            @* <div class="form-group">
-                <label asp-for="Name" class="control-label">Имя артиста</label>
-                <select asp-for="Name" class="form-control" asp-items="ViewBag.Artists">
-                    <option selected="selected" disabled="disabled">Выберите артиста</option>
-                </select>
-            </div> *@
             <div class="form-group">
                 <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>

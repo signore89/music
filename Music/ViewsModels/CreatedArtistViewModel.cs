@@ -3,6 +3,6 @@
     public class CreatedArtistViewModel
     {
         public string Name { get; set; } = "unknown artist";
-        public IFormFile File { get; set; }
+        public IFormFile? File { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 @model IEnumerable<Music.Models.Song>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Все треки";
     var pager = new PageViewModel();
     var pageNo = 0;
     if (ViewBag.Pager != null)
@@ -11,8 +11,6 @@
         pageNo = pager.CurrentPage;
     }
 }
-
-<h1>Все треки</h1>
 
 @if (User.IsInRole("Admin"))
 {

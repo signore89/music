@@ -75,17 +75,14 @@
                 </div>
             </nav>
         </header>
-        <div class="container">
-            <main role="main" class="pb-3">
+        <main role="main" class="container py-3">
                 @RenderBody()
-            </main>
-        </div>
-
-        <footer>
-            <div class="text-bg-dark p-3 text-center">
-                &copy; 2025 - Music - <a asp-area="" asp-controller="Home" asp-action="Privacy">Copyright</a>
-            </div>
-        </footer>
+        </main>
+            <footer>
+                <div class="text-bg-dark p-3 text-center">
+                    &copy; 2025 - Music - <a asp-area="" asp-controller="Home" asp-action="Privacy">Copyright</a>
+                </div>
+            </footer>
         @await RenderSectionAsync("Scripts", required: false)
     </div>
 </body>

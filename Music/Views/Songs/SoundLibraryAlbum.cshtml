@@ -1,5 +1,14 @@
 ﻿@model List<Song>
-
+@{
+    ViewData["Title"] = String.Concat("трэки альбома - ",ViewBag.Album);
+    // var pager = new PageViewModel();
+    // var pageNo = 0;
+    // if (ViewBag.Pager != null)
+    // {
+    //     pager = ViewBag.Pager;
+    //     pageNo = pager.CurrentPage;
+    // }
+}
 <!-- Основное содержимое -->
 <p>
     @if (User.IsInRole("Admin"))
@@ -37,7 +46,17 @@
                         }
                         else if (User.IsInRole("User"))
                         {
-                            // логика добавление удаление из избранного
+                            <button class="favorite-btn @((ViewBag.UserFavoritesSongs as ICollection<int>).Contains(song.Id) ? "active" : "")"
+                                    data-id="@song.Id">
+                                @if ((ViewBag.UserFavoritesSongs as ICollection<int>).Contains(song.Id))
+                                {
+                                    <span>★ В избранном</span>
+                                }
+                                else
+                                {
+                                    <span>☆ Добавить в избранное</span>
+                                }
+                            </button>
                         }
                         
                     </div>
@@ -46,3 +65,26 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.favorite-btn').click(function() {
+                var btn = $(this);
+                var songId = btn.data('id');
+
+                if (btn.hasClass('active')) {
+                    $.post('@Url.Action("RemoveSong", "Favorites")', { songId: songId }, function() {
+                        btn.removeClass('active');
+                        btn.html('<span>☆ Добавить в избранное</span>');
+                    });
+                } else {
+                    $.post('@Url.Action("AddSong", "Favorites")', { songId: songId }, function() {
+                        btn.addClass('active');
+                        btn.html('<span>★ В избранном</span>');
+                    });
+                }
+            });
+        });
+    </script>
+}

@@ -12,15 +12,12 @@
         pageNo = pager.CurrentPage;
     }
 }
-
-<h1>Все альбомы</h1>
 @if (ViewBag.ArtistId != null && User.IsInRole("Admin"))
     {
         <p>
             <a asp-action="Create" asp-route-id="@ViewBag.ArtistId"
                class="btn btn-primary">
-                <i class="bi bi-pencil"></i> Добавить альбом
-            </a>
+            <i class="bi bi-pencil"></i> Добавить альбом</a>
         </p>
     }
 <div class="container py-5">
@@ -42,11 +39,6 @@
                                 <h5 class="card-title">@album.Name</h5>
                                 <!-- Кнопки действий -->
                                 <div class="d-flex flex-wrap gap-2">
-                                    @* <!-- Изменение альбома -->
-                                    <a asp-controller="Albums" asp-action="Edit" asp-route-id="@album.Id"
-                                       class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-collection"></i> Изменить
-                                    </a> *@
                                     <!-- Песни -->
                                    <a asp-controller="Songs" asp-action="SoundLibraryAlbum" asp-route-albumId="@album.Id"
                                         class="btn btn-outline-primary btn-sm">
@@ -84,7 +76,7 @@
                                     <!-- Детали -->
                                     <a asp-action="Details" asp-route-id="@album.Id"
                                        class="btn btn-outline-warning btn-sm">
-                                        <i class="bi bi-pencil"></i> Рассмотреть
+                                        <i class="bi bi-pencil"></i> Детали альбома
                                     </a>
                                 </div>
                             </div>
@@ -111,17 +103,23 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+            // После загрузки DOM
             $('.favorite-btn').click(function() {
+                // При клике на кнопку с классом favorite-btn
                 var btn = $(this);
-                var albumId = btn.data('id');
+                var albumId = btn.data('id');// Получаем ID альбома из data-атрибута
 
                 if (btn.hasClass('active')) {
+                    // Если кнопка активна - УДАЛЯЕМ из избранного
                     $.post('@Url.Action("RemoveAlbum", "Favorites")', { albumId: albumId }, function() {
+                        // После успешного удаления
                         btn.removeClass('active');
                         btn.html('<span>☆ Добавить в избранное</span>');
                     });
                 } else {
+                    // Если кнопка не активна - ДОБАВЛЯЕМ в избранное
                     $.post('@Url.Action("AddAlbums", "Favorites")', { albumId: albumId }, function() {
+                        // После успешного добавления
                         btn.addClass('active');
                         btn.html('<span>★ В избранном</span>');
                     });

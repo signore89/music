@@ -50,7 +50,11 @@ namespace Music.Controllers
         // GET: Songs
         public async Task<IActionResult> SoundLibraryAlbum(int albumId)
         {
+            var nameAlbum = await _contextAlbum.GetAlbumByIdAsync(albumId);
+            ViewBag.Album = nameAlbum.Name;
             ViewBag.AlbumId = albumId;
+            ViewBag.UserFavoritesSongs = await _favoriteService
+                .GetUserFavoritesSongsAsync(_userProvider.GetCurrentUserId());
             var songs = await _context.GetSongByAlbum(albumId);
             return View(songs);
         }

@@ -3,7 +3,7 @@
 @model IEnumerable<Music.Models.Artist>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Исполнители песен";
     var pager = new PageViewModel();
     var pageNo = 0;
     if (ViewBag.Pager != null)
@@ -116,17 +116,23 @@
 {
     <script>
         $(document).ready(function() {
+            // После загрузки DOM
             $('.favorite-btn').click(function() {
+                // При клике на кнопку с классом favorite-btn
                 var btn = $(this);
-                var artistId = btn.data('id');
+                var artistId = btn.data('id');// Получаем ID артиста из data-атрибута
 
                 if (btn.hasClass('active')) {
+                    // Если кнопка активна - УДАЛЯЕМ из избранного
                     $.post('@Url.Action("RemoveArtist", "Favorites")', { artistId: artistId }, function() {
+                        // После успешного удаления
                         btn.removeClass('active');
                         btn.html('<span>☆ Добавить в избранное</span>');
                     });
                 } else {
+                    // Если кнопка не активна - ДОБАВЛЯЕМ в избранное
                     $.post('@Url.Action("AddArtist", "Favorites")', { artistId: artistId }, function() {
+                        // После успешного добавления
                         btn.addClass('active');
                         btn.html('<span>★ В избранном</span>');
                     });
