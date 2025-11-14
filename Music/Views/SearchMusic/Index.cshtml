@@ -1,0 +1,110 @@
+﻿@using Music.ViewsModels
+@using X.PagedList.Mvc.Core;
+@model SongViewModel
+
+
+@{
+    ViewBag.Title = "Песни";
+}
+<!-- Форма поиска и фильтрации -->
+<div class="container mt-4">
+    <form method="get" asp-action="Index" class="mb-4">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="выберите справа что искать и введите искомое ..."
+                   name="searchString" value="@Model.SearchTerm">
+            <select class="form-select" name="sortBy" style="max-width: 150px;">
+                <option value="albums" selected="@(Model.SortBy == "albums")">Альбомы</option>
+                <option value="artists" selected="@(Model.SortBy == "artists")">Исполнитель</option>
+                <option value="songs" selected="@(Model.SortBy == "songs")">Треки</option>
+            </select>
+            <button class="btn btn-primary" type="submit">Поиск</button>
+        </div>
+    </form>
+</div>
+
+@if (Model.Songs.Any())
+    {
+        <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Название</th>
+                    <th>Альбом</th>
+                    <th>Исполнитель</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                    @foreach (var song in Model.Songs)
+                    {
+                        <tr>
+                            <td>@song.Name</td>
+                            <td>
+                                @if (song.Album != null)
+                                {
+                                    <span class="badge bg-info">@song.Album.Name</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Без альбома</span>
+                                }
+                            </td>
+                        <td>
+                                @foreach (var artist in song.Artists)
+                                {
+                                    <span class="badge bg-secondary me-1">@artist.Name</span>
+                                }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(song.UrlSong) && song.UrlSong != "unknown song")
+                                {
+                                    <a href="@song.UrlSong" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-play"></i> Слушать
+                                    </a>
+                                }else
+                                {
+                                    <span class="text-muted">Недоступно</span>
+                                }
+                            </td>
+                            </tr>
+                                }
+                        </tbody>
+                </table>
+          </div>
+          <!-- Пагинация -->
+    <div class="row">
+        <div class="col-md-6">
+            <p class="text-muted">
+                Показано @Model.Songs.FirstItemOnPage - @Model.Songs.LastItemOnPage 
+                из @Model.Songs.TotalItemCount песен
+            </p>
+        </div>
+        <div class="col-md-6">
+            @Html.PagedListPager(Model.Songs, 
+                page => Url.Action("Index", new { 
+                    page,
+                    searchTerm = Model.SearchTerm,
+                    sortBy = Model.SortBy,
+                }),
+                new PagedListRenderOptions 
+                {
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" },
+                    UlElementClasses = new[] { "pagination", "justify-content-center" },
+                    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                    MaximumPageNumbersToDisplay = 5
+                })
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <h4>Песни не найдены</h4>
+        <p>Попробуйте изменить параметры поиска или добавить новые песни.</p>
+    </div>
+}
+@Html.ActionLink("Назад к всем песням", "Index", null, new { @class = "btn btn-secondary" })

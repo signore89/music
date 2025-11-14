@@ -82,7 +82,7 @@ namespace Music.Services
 
             if (result > 0)
             {
-                // Инвалидируем кеш
+                //// Инвалидируем кеш
                 _cache.Remove(GetCacheKey(userId));
                 return true;
             }
@@ -93,18 +93,15 @@ namespace Music.Services
         public async Task<HashSet<int>> GetUserFavoritesAlbumsAsync(string userName)
         {
             var cacheKey = GetCacheKey(userName);
-
-            if (!_cache.TryGetValue(cacheKey, out HashSet<int> favoritesAlbums))
-            {
-                favoritesAlbums = new HashSet<int>(await _context.Users
+            var favoritesAlbums = await _context.Users
                     .Where(u => u.Id == userName)
                     .Include(u => u.Albums)
                     .SelectMany(u => u.Albums)
                     .Select(a => a.Id)
-                    .ToListAsync());
+                    .ToHashSetAsync();
 
                 _cache.Set(cacheKey, favoritesAlbums, TimeSpan.FromMinutes(1));
-            }
+
 
             return favoritesAlbums;
         }
@@ -112,18 +109,14 @@ namespace Music.Services
         public async Task<HashSet<int>> GetUserFavoritesArtistsAsync(string userId)
         {
             var cacheKey = GetCacheKey(userId);
-
-            if (!_cache.TryGetValue(cacheKey, out HashSet<int> favoritesArtists))
-            {
-                favoritesArtists = new HashSet<int>(await _context.Users
+            var favoritesArtists = await _context.Users
                     .Where(u => u.Id == userId)
                     .Include(u => u.Artists)
                     .SelectMany(u => u.Artists)
                     .Select(a => a.Id)
-                    .ToListAsync());
+                    .ToHashSetAsync();
 
-                _cache.Set(cacheKey, favoritesArtists, TimeSpan.FromMinutes(1));
-            }
+            _cache.Set(cacheKey, favoritesArtists, TimeSpan.FromMinutes(1));
 
             return favoritesArtists;
         }
@@ -131,19 +124,14 @@ namespace Music.Services
         public async Task<HashSet<int>> GetUserFavoritesSongsAsync(string userId)
         {
             var cacheKey = GetCacheKey(userId);
-
-            if (!_cache.TryGetValue(cacheKey, out HashSet<int> favoritesSongs))
-            {
-                favoritesSongs = new HashSet<int>(await _context.Users
+            var favoritesSongs = await _context.Users
                     .Where(u => u.Id == userId)
                     .Include(u => u.Songs)
                     .SelectMany(u => u.Songs)
                     .Select(a => a.Id)
-                    .ToListAsync());
+                    .ToHashSetAsync();
 
                 _cache.Set(cacheKey, favoritesSongs, TimeSpan.FromMinutes(1));
-            }
-
             return favoritesSongs;
         }
 

@@ -1,14 +1,10 @@
 ﻿@model Music.Models.Artist
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Детали исполнителя";
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>Artist</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -25,6 +21,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Изменить</a> |
+    <a asp-action="Index">Вернуться назад</a>
 </div>

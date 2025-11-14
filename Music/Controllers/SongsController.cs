@@ -43,7 +43,7 @@ namespace Music.Controllers
             var count = await _context.GetQuantity();
             var pager = new PageViewModel(count, page);
             var skip = (page - 1) * pageSize;
-            var songs = await _context.GetPaginationAsync(skip,pager.PageSize);
+            var songs = await _context.GetPaginationAsync(skip, pager.PageSize);
             ViewBag.Pager = pager;
             return View(songs);
         }

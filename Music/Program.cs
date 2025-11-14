@@ -18,10 +18,10 @@ builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 builder.Services.AddScoped<ISongRepository, SongRepository>();
-builder.Services.AddTransient<IFavoriteService, FavoriteService>();
+builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUserProvider, UserProvider>();
+builder.Services.AddTransient<IUserProvider, UserProvider>();
 
 builder.Services.AddControllersWithViews();
 

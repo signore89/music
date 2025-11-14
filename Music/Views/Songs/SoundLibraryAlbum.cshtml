@@ -29,36 +29,38 @@
             <div class="track-list">
                 @foreach (var song in Model)
                 {
-                    <div class="track-item">
-                        <div class="track-info">
-                            <h6 class="mb-0">@song.Name</h6>
-                        </div>
-                        <audio controls class="audio-player">
-                            <source src="@song.UrlSong" type="audio/mpeg">
-                            Ваш браузер не поддерживает аудио элемент.
-                        </audio>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a asp-action="Edit" asp-route-id="@song.Id"
-                               class="btn btn-outline-warning btn-sm">
-                                <i class="bi bi-pencil"></i> Изменить
-                            </a>
-                        }
-                        else if (User.IsInRole("User"))
-                        {
-                            <button class="favorite-btn @((ViewBag.UserFavoritesSongs as ICollection<int>).Contains(song.Id) ? "active" : "")"
-                                    data-id="@song.Id">
-                                @if ((ViewBag.UserFavoritesSongs as ICollection<int>).Contains(song.Id))
-                                {
-                                    <span>★ В избранном</span>
-                                }
-                                else
-                                {
-                                    <span>☆ Добавить в избранное</span>
-                                }
-                            </button>
-                        }
+                    <div class="align-items-center">
+                        <div class="track-item">
+                            <div class="track-info">
+                                <h6 class="mb-0">@song.Name</h6>
+                            </div>
+                            <audio controls class="audio-player">
+                                <source src="@song.UrlSong" type="audio/mpeg">
+                                Ваш браузер не поддерживает аудио элемент.
+                            </audio>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@song.Id"
+                                   class="btn btn-outline-warning btn-sm">
+                                    <i class="bi bi-pencil"></i> Изменить
+                                </a>
+                            }
+                            else if (User.IsInRole("User"))
+                            {
+                                <button class="favorite-btn @((ViewBag.UserFavoritesSongs as ICollection<int>).Contains(song.Id) ? "active" : "")"
+                                        data-id="@song.Id">
+                                    @if ((ViewBag.UserFavoritesSongs as ICollection<int>).Contains(song.Id))
+                                    {
+                                        <span>★ В избранном</span>
+                                    }
+                                    else
+                                    {
+                                        <span>☆ Добавить в избранное</span>
+                                    }
+                                </button>
+                            }
                         
+                        </div>
                     </div>
                 }
             </div>

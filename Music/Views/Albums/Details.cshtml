@@ -1,7 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @model Music.Models.Album
 @inject SignInManager<ApplicationUser> SignInManager
-
+@{
+    ViewData["Title"] = "Детали альбома";
+}
 <div>
     <h4>Альбом</h4>
     <hr />

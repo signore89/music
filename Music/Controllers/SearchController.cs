@@ -21,6 +21,7 @@ namespace Music.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string query, string searchType = "albums", int page = 1)
         {
+
             var viewModel = new SearchViewModel
             {
                 Query = query,
@@ -32,6 +33,8 @@ namespace Music.Controllers
             {
                 return View(viewModel);
             }
+
+
 
             if (searchType == "albums")
             {
@@ -67,7 +70,6 @@ namespace Music.Controllers
                     .Take(PageSize)
                     .ToList();
             }
-
             return View(viewModel);
         }
     }
