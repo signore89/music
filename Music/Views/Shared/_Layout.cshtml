@@ -35,15 +35,12 @@
                                     <a class="nav-link" asp-controller="Artists" asp-action="Index">Исполнители</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Search" asp-action="Index">Поиск по темам </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" asp-controller="SearchMusic" asp-action="Index">Поиск музыки</a>
                                 </li>
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="ArtistAddImg" asp-action="Create">Добавить артиста с картинкой</a>
+                                        <a class="nav-link" asp-controller="Artists" asp-action="Create">Добавить исполнителя</a>
                                     </li>
                                 }
                             </ul>
@@ -84,7 +81,7 @@
         </main>
             <footer>
                 <div class="text-bg-dark p-3 text-center">
-                    &copy; 2025 - Music - <a asp-area="" asp-controller="Home" asp-action="Privacy">Copyright</a>
+                &copy; 2025 - Music - <a asp-area="" asp-controller="Home" asp-action="Privacy">Авторские права</a>
                 </div>
             </footer>
         @await RenderSectionAsync("Scripts", required: false)

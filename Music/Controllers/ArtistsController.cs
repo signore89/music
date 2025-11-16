@@ -4,6 +4,8 @@ using Music.Data.Repositories.Interfaces;
 using Music.Models;
 using Music.Services.Interfaces;
 using Music.ViewsModels;
+using Uploadcare;
+using Uploadcare.Upload;
 
 namespace Music.Controllers
 {
@@ -15,6 +17,7 @@ namespace Music.Controllers
         private readonly IAlbumRepository _contextAlbum;
         private readonly IFavoriteService _favoriteService;
         private readonly IUserProvider _userProvider;
+        private readonly UploadcareClient _uploadcareClient;
         private readonly string prefixKey = "Artists";
 
         public ArtistsController(IArtistRepository context, ISongRepository contextSong
@@ -27,6 +30,7 @@ namespace Music.Controllers
             _favoriteService = favoriteService;
             _favoriteService.AddCacheKeyPrefix(prefixKey);
             _userProvider = userProvider;
+            _uploadcareClient = new("9fd34966fc25c4304cbd", "9da5be88a9144fed0788");
         }
 
         const int pageSize = 2;
@@ -71,19 +75,39 @@ namespace Music.Controllers
         {
             return View();
         }
-
         [Authorize(Roles = "Admin")]
-        // POST: Artists/Create
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Name,UrlImg")] Artist artist)
+        public async Task<IActionResult> Create(CreatedArtistViewModel createdArtistViewModel)
         {
+            using var memoryStream = new MemoryStream();
+            await createdArtistViewModel.File.CopyToAsync(memoryStream);
+            var fileBytes = memoryStream.ToArray();
+            var fileUploader = new FileUploader(_uploadcareClient);
+            var result = await fileUploader.Upload(fileBytes, createdArtistViewModel.File.FileName);
             if (ModelState.IsValid)
             {
-                var idNewArtist = await _context.AddNewArtistAsync(artist);
-                return RedirectToAction(nameof(Index));
+                var newArtist = new Artist
+                {
+                    Name = createdArtistViewModel.Name,
+                    UrlImg = result.OriginalFileUrl
+                };
+                var idNewArtist = await _context.AddNewArtistAsync(newArtist);
+                return RedirectToAction(nameof(Details), new { id = idNewArtist });
             }
-            return View(artist);
+            return View();
         }
+        //[Authorize(Roles = "Admin")]
+        //// POST: Artists/Create
+        //[HttpPost]
+        //public async Task<IActionResult> Create([Bind("Id,Name,UrlImg")] Artist artist)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var idNewArtist = await _context.AddNewArtistAsync(artist);
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(artist);
+        //}
 
         [Authorize(Roles = "Admin")]
         // GET: Artists/Edit/5

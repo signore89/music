@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Music.Data.Repositories;
 using Music.Models;
@@ -7,12 +8,13 @@ using X.PagedList.Extensions;
 
 namespace Music.Controllers
 {
-    public class SearchMusic : Controller
+    [Authorize]
+    public class SearchMusicController : Controller
     {
         private readonly MusicDbContext _musicDbContext;
         private const int PageSize = 2;
 
-        public SearchMusic(MusicDbContext musicDbContext)
+        public SearchMusicController(MusicDbContext musicDbContext)
         {
             _musicDbContext = musicDbContext;
         }

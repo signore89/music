@@ -47,7 +47,7 @@
                 @if (User.IsInRole("Admin"))
                 {
                 <a asp-action="Edit" asp-route-id="@song.Id">Изменить</a>
-                < a asp - action = "Delete" asp-route-id = "@song.Id" > Удалить </ a >
+                <a asp-action= "Delete" asp-route-id="@song.Id"> Удалить </a>
                 }
                 else if (User.IsInRole("User"))
                 {

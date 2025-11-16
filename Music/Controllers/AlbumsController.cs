@@ -5,6 +5,8 @@ using Music.Data.Repositories.Interfaces;
 using Music.Models;
 using Music.Services.Interfaces;
 using Music.ViewsModels;
+using Uploadcare;
+using Uploadcare.Upload;
 
 namespace Music.Controllers
 {
@@ -15,6 +17,7 @@ namespace Music.Controllers
         private readonly IArtistRepository _artistRepository;
         private readonly IFavoriteService _favoriteService;
         private readonly IUserProvider _userProvider;
+        private readonly UploadcareClient _uploadcareClient;
         private readonly string prefixKey = "Albums";
 
         public AlbumsController(IAlbumRepository context, IArtistRepository artistRepository
@@ -25,6 +28,7 @@ namespace Music.Controllers
             _favoriteService = favoriteService;
             _favoriteService.AddCacheKeyPrefix(prefixKey);
             _userProvider = userProvider;
+            _uploadcareClient = new("9fd34966fc25c4304cbd", "9da5be88a9144fed0788");
         }
         const int pageSize = 2;
 
@@ -80,22 +84,38 @@ namespace Music.Controllers
 
         [Authorize(Roles = "Admin")]
         //GET: Albums/Create
+        [HttpGet]
         public IActionResult Create(int id)
         {
             ViewBag.Title = "Страница создания альбома";
             TempData["ArtistId"] = id;
-            //ViewData["ArtistId"] ;
             return View();
         }
 
         [Authorize(Roles = "Admin")]
         // POST: Albums/Create
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Name,YearOfIssue,UrlImg")] Album album)
+        public async Task<IActionResult> Create(CreatedAlbumViewModels createdAlbumViewModels)
         {
-            album.ArtistId = (int)TempData["ArtistId"];
-            var newAlbum = await _context.AddNewAlbumAsync(album);
-            return RedirectToAction(nameof(Index),new {idArtist = newAlbum.ArtistId});
+            using var memoryStream = new MemoryStream();
+            await createdAlbumViewModels.File.CopyToAsync(memoryStream);
+            var fileBytes = memoryStream.ToArray();
+            var fileUploader = new FileUploader(_uploadcareClient);
+            var result = await fileUploader.Upload(fileBytes, createdAlbumViewModels.File.FileName);
+            if (ModelState.IsValid)
+            {
+                var idArtist = (int)TempData["ArtistId"];
+                var artist = await _artistRepository.GetArtistByIdAsync(idArtist);
+                var newAlbum = new Album
+                {
+                    Artist = artist,
+                    Name = createdAlbumViewModels.Name,
+                    UrlImg = result.OriginalFileUrl
+                };
+                var idNewAlbum = await _context.AddNewAlbumAsync(newAlbum);
+                return RedirectToAction(nameof(Details), new { id = idNewAlbum.Id });
+            }
+            return View();
         }
 
         [Authorize(Roles = "Admin")]

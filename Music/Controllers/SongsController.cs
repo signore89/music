@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Music.Data.Repositories;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
 using Music.Services.Interfaces;
 using Music.ViewsModels;
+using Uploadcare;
+using Uploadcare.Upload;
 
 namespace Music.Controllers
 {
@@ -16,6 +19,7 @@ namespace Music.Controllers
         private readonly IAlbumRepository _contextAlbum;
         private readonly IFavoriteService _favoriteService;
         private readonly IUserProvider _userProvider;
+        private readonly UploadcareClient _uploadcareClient;
         private readonly string prefixKey = "Songs";
 
         public SongsController(ISongRepository context, IArtistRepository contextArtist
@@ -27,6 +31,7 @@ namespace Music.Controllers
             _favoriteService = favoriteService;
             _favoriteService.AddCacheKeyPrefix(prefixKey);
             _userProvider = userProvider;
+            _uploadcareClient = new("9fd34966fc25c4304cbd", "9da5be88a9144fed0788");
         }
 
         const int pageSize = 2;
@@ -77,13 +82,14 @@ namespace Music.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpGet]
         // GET: Songs/Create
         public IActionResult Create(int? idAlbum)
         {
-            var song = new Song();
-            if (idAlbum != null)
+            var songViewModel = new CreatedSongViewModels();
+            if (idAlbum.HasValue)
             { 
-                song.AlbumId = idAlbum;
+                songViewModel.AlbumId = idAlbum.Value;
                 
             }
             else
@@ -94,18 +100,36 @@ namespace Music.Controllers
                 ViewBag.Artists = listArtists;
             }
             
-            return View(song);
+            return View(songViewModel);
         }
 
         [Authorize(Roles = "Admin")]
         // POST: Songs/Create
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] Song song)
+        public async Task<IActionResult> Create(CreatedSongViewModels createdSongViewModels)
         {
-            var album = await _contextAlbum.GetAlbumByIdAsync(song.AlbumId);
-            song.Artists.Add(album.Artist);
-            var newSong = await _context.AddNewSongAsync(song);
-            return RedirectToAction(nameof(SoundLibraryAlbum), new { albumId = newSong.AlbumId});
+            using var memoryStream = new MemoryStream();
+            await createdSongViewModels.File.CopyToAsync(memoryStream);
+            var fileBytes = memoryStream.ToArray();
+            var fileUploader = new FileUploader(_uploadcareClient);
+            var result = await fileUploader.Upload(fileBytes, createdSongViewModels.File.FileName);
+            
+            if (ModelState.IsValid)
+            {
+                var album = await _contextAlbum.GetAlbumByIdAsync(createdSongViewModels.AlbumId);
+                var artist = await _contextArtist.GetArtistByIdAsync(album.ArtistId);
+                var newSong = new Song
+                {
+                    AlbumId = createdSongViewModels.AlbumId,
+                    Album = album,
+                    Name = createdSongViewModels.Name,
+                    UrlSong = result.OriginalFileUrl
+                };
+                newSong.Artists.Add(album.Artist);
+                var idNewSong = await _context.AddNewSongAsync(newSong);
+                return RedirectToAction(nameof(Details), new { id = idNewSong.Id });
+            }
+            return View();
         }
 
         [Authorize(Roles = "Admin")]
